@@ -97,7 +97,7 @@ const Game = () => {
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <form onSubmit={handleSubmit}>
                     <div className='team'>
-                        <h3>Team White</h3>
+                        <h3>Team White   <span role="img" aria-label="White Flag">🏳️</span></h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                             <Input
                                 value={teamWhiteGoalie}
@@ -147,7 +147,7 @@ const Game = () => {
                         </div>
                     </div>
                     <div className='team'>
-                        <h3>Team Black</h3>
+                        <h3>Team Black <span role="img" aria-label="Black Flag">🏴</span></h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                             <Input
                                 value={teamBlackGoalie}
