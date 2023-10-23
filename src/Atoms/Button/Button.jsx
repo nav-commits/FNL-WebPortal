@@ -1,12 +1,12 @@
 import React from 'react';
 
-function Button({ title, onClick }) {
+function Button({ title, onClick, type, color }) {
     return (
         <button
             onClick={onClick}
             style={{
                 marginTop: '20px',
-                backgroundColor: '#007BFF',
+                backgroundColor: color,
                 color: '#fff',
                 padding: '10px 20px',
                 border: 'none',
@@ -14,7 +14,7 @@ function Button({ title, onClick }) {
                 cursor: 'pointer',
                 fontSize: '16px',
             }}
-            type='submit'
+            type={type}
         >
             {title}
         </button>

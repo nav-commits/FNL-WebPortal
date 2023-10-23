@@ -1,41 +1,71 @@
 import React, { useEffect, useState } from 'react';
 import Button from '../Atoms/Button/Button';
-import Input from '../Atoms/Input/Input';
 import MatchResults from './MatchResults';
-const PlayerList = () => {
+import Input from '../Atoms/Input/Input';
+
+const Game = () => {
+    const [formDataArray, setFormDataArray] = useState([]);
+    const [teamWhiteGoalie, setTeamWhiteGoalie] = useState('');
+    const [teamBlackGoalie, setTeamBlackGoalie] = useState('');
+    const [teamWhitePlayers, setTeamWhitePlayers] = useState([{ name: '' }]);
+    const [teamBlackPlayers, setTeamBlackPlayers] = useState([{ name: '' }]);
+
     const [formData, setFormData] = useState({
         game: {
             teamWhite: {
                 Team: 'White',
+                players: [{}],
                 goalie: '',
-                player1: '',
-                player2: '',
-                player3: '',
-                player4: '',
-                player5: '',
-                player6: '',
             },
             teamBlack: {
                 Team: 'Black',
+                players: [{}],
                 goalie: '',
-                player1: '',
-                player2: '',
-                player3: '',
-                player4: '',
-                player5: '',
-                player6: '',
             },
         },
     });
 
-    const [formDataArray, setFormDataArray] = useState([]);
-
-    const handlePlayerNameChange = (game, team, player, newName) => {
+    const handlePlayerNameChange = (team, playerIndex, newName, playerType) => {
         setFormData((prevData) => {
             const updatedData = { ...prevData };
-            updatedData[game][team][player] = newName;
+            if (playerType === 'goalie') {
+                updatedData.game[team].goalie = newName;
+            } else {
+                updatedData.game[team].players = updatedData.game[team].players.map(
+                    (player, index) => {
+                        if (index === playerIndex) {
+                            player.name = newName;
+                        }
+                        return player;
+                    }
+                );
+            }
             return updatedData;
         });
+    };
+
+    const handleAddPlayer = (team) => {
+        if (team === 'teamWhite') {
+            setTeamWhitePlayers((prevPlayers) => [...prevPlayers, { name: '' }]);
+        } else {
+            setTeamBlackPlayers((prevPlayers) => [...prevPlayers, { name: '' }]);
+        }
+        setFormData((prevData) => {
+            const updatedData = { ...prevData };
+            updatedData.game[team].players.push({});
+            return updatedData;
+        });
+    };
+    const removePlayer = (team, playerIndex) => {
+        if (team === 'teamWhite') {
+            setTeamWhitePlayers((prevPlayers) =>
+                prevPlayers.filter((player, index) => index !== playerIndex)
+            );
+        } else {
+            setTeamBlackPlayers((prevPlayers) =>
+                prevPlayers.filter((player, index) => index !== playerIndex)
+            );
+        }
     };
 
     const handleSubmit = (e) => {
@@ -51,31 +81,6 @@ const PlayerList = () => {
         localStorage.setItem('formData', JSON.stringify(updatedFormData));
         // Push the form data into the array
         setFormDataArray((prevDataArray) => [...prevDataArray, updatedFormData]);
-        // Clear the form data
-        setFormData({
-            game: {
-                teamWhite: {
-                    Team: 'White',
-                    goalie: '',
-                    player1: '',
-                    player2: '',
-                    player3: '',
-                    player4: '',
-                    player5: '',
-                    player6: '',
-                },
-                teamBlack: {
-                    Team: 'Black',
-                    goalie: '',
-                    player1: '',
-                    player2: '',
-                    player3: '',
-                    player4: '',
-                    player5: '',
-                    player6: '',
-                },
-            },
-        });
     };
 
     useEffect(() => {
@@ -86,8 +91,6 @@ const PlayerList = () => {
         }
     }, []);
 
-    console.log(formDataArray);
-
     return (
         <>
             <h1 style={{ textAlign: 'center' }}>FNL Roll Call</h1>
@@ -97,53 +100,49 @@ const PlayerList = () => {
                         <h3>Team White</h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                             <Input
-                                value={formData.game.teamWhite.goalie}
-                                onChange={(e) =>
-                                    handlePlayerNameChange('game', 'teamWhite', 'goalie', e.target.value)
-                                }
+                                value={teamWhiteGoalie}
+                                onChange={(e) => {
+                                    setTeamWhiteGoalie(e.target.value);
+                                    handlePlayerNameChange(
+                                        'teamWhite',
+                                        null,
+                                        e.target.value,
+                                        'goalie'
+                                    );
+                                }}
                                 placeholder='Goalie'
                             />
-                            <Input
-                                value={formData.game.teamWhite.player1}
-                                onChange={(e) =>
-                                    handlePlayerNameChange('game', 'teamWhite', 'player1', e.target.value)
-                                }
-                                placeholder='Player 1'
-                            />
-                            <Input
-                                value={formData.game.teamWhite.player2}
-                                onChange={(e) =>
-                                    handlePlayerNameChange('game', 'teamWhite', 'player2', e.target.value)
-                                }
-                                placeholder='Player 2'
-                            />
-                            <Input
-                                value={formData.game.teamWhite.player3}
-                                onChange={(e) =>
-                                    handlePlayerNameChange('game', 'teamWhite', 'player3', e.target.value)
-                                }
-                                placeholder='Player 3'
-                            />
-                            <Input
-                                value={formData.game.teamWhite.player4}
-                                onChange={(e) =>
-                                    handlePlayerNameChange('game', 'teamWhite', 'player4', e.target.value)
-                                }
-                                placeholder='Player 4'
-                            />
-                            <Input
-                                value={formData.game.teamWhite.player5}
-                                onChange={(e) =>
-                                    handlePlayerNameChange('game', 'teamWhite', 'player5', e.target.value)
-                                }
-                                placeholder='Player 5'
-                            />
-                            <Input
-                                value={formData.game.teamWhite.player6}
-                                onChange={(e) =>
-                                    handlePlayerNameChange('game', 'teamWhite', 'player6', e.target.value)
-                                }
-                                placeholder='Player 6'
+                            {teamWhitePlayers.map((player, index) => (
+                                <>
+                                    <Input
+                                        key={index}
+                                        value={player.name}
+                                        onChange={(e) => {
+                                            const newPlayers = [...teamWhitePlayers];
+                                            newPlayers[index].name = e.target.value;
+                                            setTeamWhitePlayers(newPlayers);
+                                            handlePlayerNameChange(
+                                                'teamWhite',
+                                                index,
+                                                e.target.value,
+                                                'player'
+                                            );
+                                        }}
+                                        placeholder={`Player ${index + 1}`}
+                                    />
+                                    <Button
+                                        color='red'
+                                        title='Remove Player'
+                                        type='button'
+                                        onClick={() => removePlayer('teamWhite', index)}
+                                    />
+                                </>
+                            ))}
+                            <Button
+                                title='Add Player'
+                                color='#007BFF'
+                                type='button'
+                                onClick={() => handleAddPlayer('teamWhite')}
                             />
                         </div>
                     </div>
@@ -151,67 +150,60 @@ const PlayerList = () => {
                         <h3>Team Black</h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                             <Input
-                                value={formData.game.teamBlack.goalie}
-                                onChange={(e) =>
-                                    handlePlayerNameChange('game', 'teamBlack', 'goalie', e.target.value)
-                                }
+                                value={teamBlackGoalie}
+                                onChange={(e) => {
+                                    setTeamBlackGoalie(e.target.value);
+                                    handlePlayerNameChange(
+                                        'teamBlack',
+                                        null,
+                                        e.target.value,
+                                        'goalie'
+                                    );
+                                }}
                                 placeholder='Goalie'
                             />
-                            <Input
-                                value={formData.game.teamBlack.player1}
-                                onChange={(e) =>
-                                    handlePlayerNameChange('game', 'teamBlack', 'player1', e.target.value)
-                                }
-                                placeholder='Player 1'
-                            />
-                            <Input
-                                value={formData.game.teamBlack.player2}
-                                onChange={(e) =>
-                                    handlePlayerNameChange('game', 'teamBlack', 'player2', e.target.value)
-                                }
-                                placeholder='Player 2'
-                            />
-                            <Input
-                                value={formData.game.teamBlack.player3}
-                                onChange={(e) =>
-                                    handlePlayerNameChange('game', 'teamBlack', 'player3', e.target.value)
-                                }
-                                placeholder='Player 3'
-                            />
-                            <Input
-                                value={formData.game.teamBlack.player4}
-                                onChange={(e) =>
-                                    handlePlayerNameChange('game', 'teamBlack', 'player4', e.target.value)
-                                }
-                                placeholder='Player 4'
-                            />
-                            <Input
-                                value={formData.game.teamBlack.player5}
-                                onChange={(e) =>
-                                    handlePlayerNameChange('game', 'teamBlack', 'player5', e.target.value)
-                                }
-                                placeholder='Player 5'
-                            />
-                            <Input
-                                value={formData.game.teamBlack.player6}
-                                onChange={(e) =>
-                                    handlePlayerNameChange('game', 'teamBlack', 'player6', e.target.value)
-                                }
-                                placeholder='Player 6'
+                            {teamBlackPlayers.map((player, index) => (
+                                <>
+                                    <Input
+                                        key={index}
+                                        value={player.name}
+                                        onChange={(e) => {
+                                            const newPlayers = [...teamBlackPlayers];
+                                            newPlayers[index].name = e.target.value;
+                                            setTeamBlackPlayers(newPlayers);
+                                            handlePlayerNameChange(
+                                                'teamBlack',
+                                                index,
+                                                e.target.value,
+                                                'player'
+                                            );
+                                        }}
+                                        placeholder={`Player ${index + 1}`}
+                                    />
+                                    <Button
+                                        color='red'
+                                        title='Remove Player'
+                                        type='button'
+                                        onClick={() => removePlayer('teamBlack', index)}
+                                    />
+                                </>
+                            ))}
+
+                            <Button
+                                title='Add Player'
+                                color='#007BFF'
+                                type='button'
+                                onClick={() => handleAddPlayer('teamBlack')}
                             />
                         </div>
                     </div>
 
-                    <Button title='Submit' />
+                    <Button title='Submit' type='submit' color='#007BFF' />
                 </form>
             </div>
-            {/* create context for the game results */}
             <MatchResults formDataArray={formDataArray} />
         </>
     );
 };
 
-export default PlayerList;
-
-
-
+export default Game;

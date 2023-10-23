@@ -9,6 +9,7 @@ function Input({ value, onChange, placeholder}) {
             onChange={onChange}
             placeholder={placeholder}
             style={{
+                listStyle: 'none',
                 width: '300px',
                 padding: '5px',
                 borderLeft: 'none',
