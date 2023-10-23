@@ -1,13 +1,15 @@
 import './App.css';
-import PlayerList from './Views/PlayerList';
+import Game from './Views/Game';
+import { Routes, Route } from 'react-router-dom';
+import Home from './Views/Home';
 
 function App() {
     return (
         <>
-            <div className='App'>
-                <h1>FNL Web portal</h1>
-            </div>
-            <PlayerList />
+            <Routes>
+                <Route exact path='/' element={<Home />} />
+                <Route path='/Game' element={<Game />} />
+            </Routes>
         </>
     );
 }
