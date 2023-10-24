@@ -9,6 +9,9 @@ const Game = () => {
     const [teamBlackGoalie, setTeamBlackGoalie] = useState('');
     const [teamWhitePlayers, setTeamWhitePlayers] = useState([{ name: '' }]);
     const [teamBlackPlayers, setTeamBlackPlayers] = useState([{ name: '' }]);
+    const [monthToMonth, setmonthToMonth] = useState([{ name: '' }]);
+    const [irAndOut, setIRAndOut] = useState([{ name: '' }]);
+    const [weekToWeek, setWeekToWeek] = useState([{ name: '' }]);
 
     const [formData, setFormData] = useState({
         game: {
@@ -22,6 +25,18 @@ const Game = () => {
                 players: [{}],
                 goalie: '',
             },
+            irAndOut: {
+                Team: 'irAndOut',
+                players: [{}],
+            },
+            monthToMonth: {
+                Team: 'monthToMonth',
+                players: [{}],
+            },
+            weekToWeek: {
+                Team: 'weekToWeek',
+                players: [{}],
+            },
         },
     });
 
@@ -30,7 +45,38 @@ const Game = () => {
             const updatedData = { ...prevData };
             if (playerType === 'goalie') {
                 updatedData.game[team].goalie = newName;
-            } else {
+            }
+            else if (playerType === 'irAndOut') {
+                updatedData.game[team].players = updatedData.game[team].players.map(
+                    (player, index) => {
+                        if (index === playerIndex) {
+                            player.name = newName;
+                        }
+                        return player;
+                    }
+                );
+            }
+            else if (playerType === 'weekToWeek') {
+                updatedData.game[team].players = updatedData.game[team].players.map(
+                    (player, index) => {
+                        if (index === playerIndex) {
+                            player.name = newName;
+                        }
+                        return player;
+                    }
+                );
+            }
+            else if (playerType === 'monthToMonth') {
+                updatedData.game[team].players = updatedData.game[team].players.map(
+                    (player, index) => {
+                        if (index === playerIndex) {
+                            player.name = newName;
+                        }
+                        return player;
+                    }
+                );
+            }
+            else {
                 updatedData.game[team].players = updatedData.game[team].players.map(
                     (player, index) => {
                         if (index === playerIndex) {
@@ -47,7 +93,17 @@ const Game = () => {
     const handleAddPlayer = (team) => {
         if (team === 'teamWhite') {
             setTeamWhitePlayers((prevPlayers) => [...prevPlayers, { name: '' }]);
-        } else {
+        }
+        else if (team === 'irAndOut') {
+            setIRAndOut((prevPlayers) => [...prevPlayers, { name: '' }]);
+        }
+        else if (team === 'monthToMonth') {
+            setmonthToMonth((prevPlayers) => [...prevPlayers, { name: '' }]);
+        }
+        else if (team === 'weekToWeek') {
+            setWeekToWeek((prevPlayers) => [...prevPlayers, { name: '' }]);
+        }
+        else {
             setTeamBlackPlayers((prevPlayers) => [...prevPlayers, { name: '' }]);
         }
         setFormData((prevData) => {
@@ -61,35 +117,56 @@ const Game = () => {
             setTeamWhitePlayers((prevPlayers) =>
                 prevPlayers.filter((player, index) => index !== playerIndex)
             );
-        } else {
+        }
+        else if (team === 'irAndOut') {
+            setIRAndOut((prevPlayers) =>
+                prevPlayers.filter((player, index) => index !== playerIndex)
+            );
+        }
+        else if (team === 'weekToWeek') {
+            setWeekToWeek((prevPlayers) =>
+                prevPlayers.filter((player, index) => index !== playerIndex)
+            );
+        }
+        else if (team === 'monthToMonth') {
+            setmonthToMonth((prevPlayers) =>
+                prevPlayers.filter((player, index) => index !== playerIndex)
+            );
+        }
+        else {
             setTeamBlackPlayers((prevPlayers) =>
                 prevPlayers.filter((player, index) => index !== playerIndex)
             );
         }
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Add the current date to the form data
-        const currentDate = new Date().toLocaleDateString();
-        const updatedFormData = {
-            ...formData,
-            date: currentDate,
-            week: formDataArray.length + 1,
+   
+        const handleSubmit = (e) => {
+            e.preventDefault();
+            // Add the current date to the form data
+            const currentDate = new Date().toLocaleDateString();
+            const formDataArray = JSON.parse(localStorage.getItem('formDataArray')) || [];
+            const updatedFormData = {
+                ...formData,
+                date: currentDate,
+                week: formDataArray.length + 1,
+            };
+            // Save the form data to local storage
+            localStorage.setItem('formDataArray', JSON.stringify(updatedFormData));
+            // Push the form data into the array
+            setFormDataArray((prevDataArray) => [...prevDataArray, updatedFormData]);
         };
-        // Save the form data to local storage
-        localStorage.setItem('formData', JSON.stringify(updatedFormData));
-        // Push the form data into the array
-        setFormDataArray((prevDataArray) => [...prevDataArray, updatedFormData]);
-    };
+    
 
     useEffect(() => {
         // Load the form data array from local storage
         const savedFormDataArray = JSON.parse(localStorage.getItem('formDataArray'));
-        if (savedFormDataArray) {
+        if (savedFormDataArray.length > 0) {
             setFormDataArray(savedFormDataArray);
         }
     }, []);
+
+    console.log(formData)
 
     return (
         <>
@@ -196,12 +273,126 @@ const Game = () => {
                                 onClick={() => handleAddPlayer('teamBlack')}
                             />
                         </div>
+                    
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '50px' }}>
+                        <h2>IR and Out</h2>
+                        {irAndOut.map((player, index) => (
+                            <>
+                                <Input
+                                    key={index}
+                                    value={player.name}
+                                    onChange={(e) => {
+                                        const newPlayers = [...irAndOut];
+                                        newPlayers[index].name = e.target.value;
+                                        setIRAndOut(newPlayers);
+                                        handlePlayerNameChange(
+                                            'irAndOut',
+                                            index,
+                                            e.target.value,
+                                            'player'
+                                        );
+                                    }}
+                                    placeholder={`Player ${index + 1}`}
+                                />
+                                <Button
+                                    color='red'
+                                    title='Remove Player'
+                                    type='button'
+                                    onClick={() => removePlayer('irAndOut', index)}
+                                />
+                            </>
+                        ))}
+
+                        <Button
+                            title='Add Player'
+                            color='#007BFF'
+                            type='button'
+                            onClick={() => handleAddPlayer('irAndOut')}
+                        />
+                    </div>
+
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '50px' }}>
+                        <h2>Month to Month</h2>
+                        {monthToMonth.map((player, index) => (
+                            <>
+                                <Input
+                                    key={index}
+                                    value={player.name}
+                                    onChange={(e) => {
+                                        const newPlayers = [...monthToMonth];
+                                        newPlayers[index].name = e.target.value;
+                                        setmonthToMonth(newPlayers);
+                                        handlePlayerNameChange(
+                                            'monthToMonth',
+                                            index,
+                                            e.target.value,
+                                            'player'
+                                        );
+                                    }}
+                                    placeholder={`Player ${index + 1}`}
+                                />
+                                <Button
+                                    color='red'
+                                    title='Remove Player'
+                                    type='button'
+                                    onClick={() => removePlayer('monthToMonth', index)}
+                                />
+                            </>
+                        ))}
+
+                        <Button
+                            title='Add Player'
+                            color='#007BFF'
+                            type='button'
+                            onClick={() => handleAddPlayer('monthToMonth')}
+                        />
+                    </div>
+
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '50px' }}>
+                        <h2>Week to week</h2>
+                        {weekToWeek.map((player, index) => (
+                            <>
+                                <Input
+                                    key={index}
+                                    value={player.name}
+                                    onChange={(e) => {
+                                        const newPlayers = [...weekToWeek];
+                                        newPlayers[index].name = e.target.value;
+                                        setWeekToWeek(newPlayers);
+                                        handlePlayerNameChange(
+                                            'weekToWeek',
+                                            index,
+                                            e.target.value,
+                                            'player'
+                                        );
+                                    }}
+                                    placeholder={`Player ${index + 1}`}
+                                />
+                                <Button
+                                    color='red'
+                                    title='Remove Player'
+                                    type='button'
+                                    onClick={() => removePlayer('weekToWeek', index)}
+                                />
+                            </>
+                        ))}
+
+                        <Button
+                            title='Add Player'
+                            color='#007BFF'
+                            type='button'
+                            onClick={() => handleAddPlayer('weekToWeek')}
+                        />
                     </div>
 
                     <Button title='Submit' type='submit' color='#007BFF' />
                 </form>
             </div>
-            <MatchResults formDataArray={formDataArray} />
+             <MatchResults formDataArray={formDataArray} /> 
         </>
     );
 };
