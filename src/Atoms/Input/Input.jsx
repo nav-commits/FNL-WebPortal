@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Input({ value, onChange, placeholder}) {
+function Input({ value, onChange, placeholder }) {
 
     return (
         <input
@@ -15,6 +15,8 @@ function Input({ value, onChange, placeholder}) {
                 borderLeft: 'none',
                 borderRight: 'none',
                 borderTop: 'none',
+                borderBottom: '2px solid #ccc',
+                outline: 'none',
             }}
         />
     );
