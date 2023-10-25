@@ -5,6 +5,7 @@ import Home from './Views/Home';
 import Navbar from './Organisms/Navbar/Navbar';
 import Results from './Views/Results';
 import Players from './Views/Players';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function App() {
     return (

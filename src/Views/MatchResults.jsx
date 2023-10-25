@@ -31,18 +31,18 @@ function MatchResults({ formDataArray }) {
                         <div>
                             <h4>Team White</h4>
                             <p>Goalie: {formData.game.teamWhite.goalie}</p>
-                            <ul>
+                            <ul style={{listStyle:'none'}} >
                                 {formData.game.teamWhite.players.map((player, index) => (
-                                    <li key={index}>{player.name}</li>
+                                    <li key={index}>PlayerName: {player.name}</li>
                                 ))}
                             </ul>
                         </div>
                         <div>
                             <h4>Team Black</h4>
                             <p>Goalie: {formData.game.teamBlack.goalie}</p>
-                            <ul>
+                            <ul style={{ listStyle: 'none' }}>
                                 {formData.game.teamBlack.players.map((player, index) => (
-                                    <li key={index}>{player.name}</li>
+                                    <li key={index}>PlayerName: {player.name}</li>
                                 ))}
                             </ul>
                         </div>
