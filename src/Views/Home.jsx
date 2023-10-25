@@ -1,8 +1,5 @@
 import React from 'react';
-
-
 function Home() {
-
     return (
         <div style={{textAlign:'center'}}>
             <h1>Welcome FNL Portal!</h1>

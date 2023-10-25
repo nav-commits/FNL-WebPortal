@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Button({ title, onClick, type, color }) {
+function Button({ title, onClick, type, color, marginTop }) {
     return (
         <button
             onClick={onClick}
@@ -13,6 +13,8 @@ function Button({ title, onClick, type, color }) {
                 borderRadius: '5px',
                 cursor: 'pointer',
                 fontSize: '16px',
+                width: '100px',
+                margin: marginTop,
             }}
             type={type}
         >
