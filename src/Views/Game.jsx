@@ -3,6 +3,8 @@ import Button from '../Atoms/Button/Button';
 import MatchResults from './MatchResults';
 import PlayerInput from '../Molecules/PlayerInput/PlayerInput';
 import Input from '../Atoms/Input/Input';
+import { fnlPlayers } from '../Utils';
+import Dropdown from '../Molecules/Dropdown/Dropdown';
 
 const Game = () => {
     const [formDataArray, setFormDataArray] = useState([]);
@@ -13,7 +15,7 @@ const Game = () => {
     const [monthToMonth, setmonthToMonth] = useState([{ name: '' }]);
     const [irAndOut, setIRAndOut] = useState([{ name: '' }]);
     const [weekToWeek, setWeekToWeek] = useState([{ name: '' }]);
-
+    const [filteredPlayers, setFilteredPlayers] = useState([]);
     const [formData, setFormData] = useState({
         game: {
             teamWhite: {
@@ -40,8 +42,17 @@ const Game = () => {
             },
         },
     });
+    const filterPlayersDropdown = (name) => {
+        const filtered = fnlPlayers.filter((player) => player.name.toLowerCase().includes(name));
+        setFilteredPlayers(filtered);
+    }
 
     const handlePlayerNameChange = (team, playerIndex, newName, playerType) => {
+        // Filter the players dropdown
+        filterPlayersDropdown(newName);
+        console.log(newName);
+    
+        // Update the form data with the new name
         setFormData((prevData) => {
             const updatedData = { ...prevData };
             if (playerType === 'goalie') {
@@ -58,6 +69,7 @@ const Game = () => {
             }
             return updatedData;
         });
+
     };
 
     const handleAddPlayer = (team) => {
@@ -135,6 +147,7 @@ const Game = () => {
         localStorage.setItem('formDataArray', JSON.stringify(updatedFormData));
         // Push the form data into the array
         setFormDataArray((prevDataArray) => [...prevDataArray, updatedFormData]);
+
     };
 
     useEffect(() => {
@@ -145,7 +158,64 @@ const Game = () => {
         }
     }, []);
 
-    console.log(formDataArray);
+    // set the input value to the name of the player selected
+    const handleNameSelect = (name, inputType, playerIndex) => {
+        switch (inputType) {
+            case 'teamWhiteGoalie':
+                setTeamWhiteGoalie(name);
+                handlePlayerNameChange('teamWhite', null, name, 'goalie');
+                setFilteredPlayers([]);
+                break;
+
+            case 'teamBlackGoalie':
+                setTeamBlackGoalie(name);
+                handlePlayerNameChange('teamBlack', null, name, 'goalie');
+                setFilteredPlayers([]);
+                break;
+
+            case 'teamWhitePlayer':
+                const newTeamWhitePlayers = [...teamWhitePlayers];
+                newTeamWhitePlayers[playerIndex] = { ...newTeamWhitePlayers[playerIndex], name };
+                handlePlayerNameChange('teamWhite', playerIndex, name, 'player');
+                setTeamWhitePlayers(newTeamWhitePlayers);
+                setFilteredPlayers([]);
+                break;
+
+            case 'teamBlackPlayer':
+                const newTeamBlackPlayers = [...teamBlackPlayers];
+                newTeamBlackPlayers[playerIndex] = { ...newTeamBlackPlayers[playerIndex], name };
+                handlePlayerNameChange('teamBlack', playerIndex, name, 'player');
+                setTeamBlackPlayers(newTeamBlackPlayers);
+                setFilteredPlayers([]);
+                break;
+
+            case 'irAndOut':
+                const newIRAndOut = [...irAndOut];
+                newIRAndOut[playerIndex] = { ...newIRAndOut[playerIndex], name };
+                handlePlayerNameChange('irAndOut', playerIndex, name, 'player');
+                setIRAndOut(newIRAndOut);
+                setFilteredPlayers([]);
+                break;
+
+            case 'monthToMonth':
+                const newMonthToMonth = [...monthToMonth];
+                newMonthToMonth[playerIndex] = { ...newMonthToMonth[playerIndex], name };
+                handlePlayerNameChange('monthToMonth', playerIndex, name, 'player');
+                setmonthToMonth(newMonthToMonth);
+                setFilteredPlayers([]);
+
+                break;
+            case 'weekToWeek':
+                const newWeekToWeek = [...weekToWeek];
+                newWeekToWeek[playerIndex] = { ...newWeekToWeek[playerIndex], name };
+                handlePlayerNameChange('weekToWeek', playerIndex, name, 'player');
+                setWeekToWeek(newWeekToWeek);
+                setFilteredPlayers([]);
+                break;
+            default:
+                break;
+        }
+    };
 
     return (
         <>
@@ -180,6 +250,13 @@ const Game = () => {
                                 }}
                                 placeholder='Goalie'
                             />
+                            {/* dropdown */}
+                            <Dropdown
+                                data={filteredPlayers}
+                                handleNameSelect={handleNameSelect}
+                                index={null}
+                                nameType={'teamWhiteGoalie'}
+                            />
 
                             {teamWhitePlayers.map((player, index) => (
                                 <React.Fragment key={index}>
@@ -199,6 +276,13 @@ const Game = () => {
                                         placeholder={`Player ${index + 1}`}
                                         onAdd={() => handleAddPlayer('teamWhite')}
                                         onRemove={() => removePlayer('teamWhite', index)}
+                                    />
+                                    {/* dropdown */}
+                                    <Dropdown
+                                        data={filteredPlayers}
+                                        handleNameSelect={handleNameSelect}
+                                        index={index}
+                                        nameType={'teamWhitePlayer'}
                                     />
                                 </React.Fragment>
                             ))}
@@ -224,6 +308,13 @@ const Game = () => {
                                 }}
                                 placeholder='Goalie'
                             />
+                            {/* dropdown */}
+                            <Dropdown
+                                data={filteredPlayers}
+                                handleNameSelect={handleNameSelect}
+                                index={null}
+                                nameType={'teamBlackGoalie'}
+                            />
 
                             {teamBlackPlayers.map((player, index) => (
                                 <React.Fragment key={index}>
@@ -243,6 +334,13 @@ const Game = () => {
                                         placeholder={`Player ${index + 1}`}
                                         onAdd={() => handleAddPlayer('teamBlack')}
                                         onRemove={() => removePlayer('teamBlack', index)}
+                                    />
+                                    {/* dropdown */}
+                                    <Dropdown
+                                        data={filteredPlayers}
+                                        handleNameSelect={handleNameSelect}
+                                        index={index}
+                                        nameType={'teamBlackPlayer'}
                                     />
                                 </React.Fragment>
                             ))}
@@ -285,6 +383,12 @@ const Game = () => {
                                         onAdd={() => handleAddPlayer('irAndOut')}
                                         onRemove={() => removePlayer('irAndOut', index)}
                                     />
+                                    <Dropdown
+                                        data={filteredPlayers}
+                                        handleNameSelect={handleNameSelect}
+                                        index={index}
+                                        nameType={'irAndOut'}
+                                    />
                                 </React.Fragment>
                             ))}
                         </div>
@@ -303,7 +407,7 @@ const Game = () => {
                                     <PlayerInput
                                         value={player.name}
                                         onChange={(e) => {
-                                            const newPlayers = [...teamWhitePlayers];
+                                            const newPlayers = [...monthToMonth];
                                             newPlayers[index].name = e.target.value;
                                             setmonthToMonth(newPlayers);
                                             handlePlayerNameChange(
@@ -316,6 +420,12 @@ const Game = () => {
                                         placeholder={`Player ${index + 1}`}
                                         onAdd={() => handleAddPlayer('monthToMonth')}
                                         onRemove={() => removePlayer('monthToMonth', index)}
+                                    />
+                                    <Dropdown
+                                        data={filteredPlayers}
+                                        handleNameSelect={handleNameSelect}
+                                        index={index}
+                                        nameType={'monthToMonth'}
                                     />
                                 </React.Fragment>
                             ))}
@@ -347,6 +457,12 @@ const Game = () => {
                                         placeholder={`Player ${index + 1}`}
                                         onAdd={() => handleAddPlayer('weekToWeek')}
                                         onRemove={() => removePlayer('weekToWeek', index)}
+                                    />
+                                    <Dropdown
+                                        data={filteredPlayers}
+                                        handleNameSelect={handleNameSelect}
+                                        index={index}
+                                        nameType={'weekToWeek'}
                                     />
                                 </React.Fragment>
                             ))}
