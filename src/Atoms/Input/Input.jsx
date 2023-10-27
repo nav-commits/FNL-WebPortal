@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Input({ value, onChange, placeholder }) {
+function Input({ value, onChange, placeholder, onFocus }) {
 
     return (
         <input
@@ -8,6 +8,7 @@ function Input({ value, onChange, placeholder }) {
             value={value}
             onChange={onChange}
             placeholder={placeholder}
+            onFocus={onFocus}
             style={{
                 listStyle: 'none',
                 width: '300px',
