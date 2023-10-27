@@ -1,9 +1,10 @@
 import React from 'react';
 
-export default function Dropdown({ data, handleNameSelect, index, nameType }) {
+export default function Dropdown({ data, handleNameSelect, index, nameType, activeField }) {
+    console.log(activeField)
     return (
         <>
-            {data.length > 0 && (
+            {data.length > 0 && activeField === nameType && (
                 <div style={{ width: '50%' }}>
                     <ul
                         style={{

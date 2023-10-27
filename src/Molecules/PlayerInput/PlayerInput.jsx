@@ -2,7 +2,7 @@ import React from 'react';
 
 import Input from '../../Atoms/Input/Input';
 
-const PlayerInput = ({ value, onChange, placeholder, onAdd, onRemove, checkPlayers }) => {
+const PlayerInput = ({ value, onChange, placeholder, onAdd, onRemove, onFocus, onBlur }) => {
     return (
         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '20px' }}>
             <Input
@@ -10,6 +10,8 @@ const PlayerInput = ({ value, onChange, placeholder, onAdd, onRemove, checkPlaye
                 onChange={onChange}
                 placeholder={placeholder}
                 style={{ flex: 1 }}
+                onFocus={onFocus}
+                onBlur={onBlur}  
             />
             <div style={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
                 <span

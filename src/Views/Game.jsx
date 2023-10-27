@@ -16,6 +16,7 @@ const Game = () => {
     const [irAndOut, setIRAndOut] = useState([{ name: '' }]);
     const [weekToWeek, setWeekToWeek] = useState([{ name: '' }]);
     const [filteredPlayers, setFilteredPlayers] = useState([]);
+    const [activeField, setActiveField] = useState(null);
     const [formData, setFormData] = useState({
         game: {
             teamWhite: {
@@ -45,13 +46,10 @@ const Game = () => {
     const filterPlayersDropdown = (name) => {
         const filtered = fnlPlayers.filter((player) => player.name.toLowerCase().includes(name));
         setFilteredPlayers(filtered);
-    }
+    };
 
     const handlePlayerNameChange = (team, playerIndex, newName, playerType) => {
-        // Filter the players dropdown
         filterPlayersDropdown(newName);
-        console.log(newName);
-    
         // Update the form data with the new name
         setFormData((prevData) => {
             const updatedData = { ...prevData };
@@ -69,7 +67,6 @@ const Game = () => {
             }
             return updatedData;
         });
-
     };
 
     const handleAddPlayer = (team) => {
@@ -147,7 +144,6 @@ const Game = () => {
         localStorage.setItem('formDataArray', JSON.stringify(updatedFormData));
         // Push the form data into the array
         setFormDataArray((prevDataArray) => [...prevDataArray, updatedFormData]);
-
     };
 
     useEffect(() => {
@@ -173,7 +169,7 @@ const Game = () => {
                 setFilteredPlayers([]);
                 break;
 
-            case 'teamWhitePlayer':
+            case `teamWhitePlayer-${playerIndex}`:
                 const newTeamWhitePlayers = [...teamWhitePlayers];
                 newTeamWhitePlayers[playerIndex] = { ...newTeamWhitePlayers[playerIndex], name };
                 handlePlayerNameChange('teamWhite', playerIndex, name, 'player');
@@ -181,7 +177,7 @@ const Game = () => {
                 setFilteredPlayers([]);
                 break;
 
-            case 'teamBlackPlayer':
+            case `teamBlackPlayer-${playerIndex}`:
                 const newTeamBlackPlayers = [...teamBlackPlayers];
                 newTeamBlackPlayers[playerIndex] = { ...newTeamBlackPlayers[playerIndex], name };
                 handlePlayerNameChange('teamBlack', playerIndex, name, 'player');
@@ -189,7 +185,7 @@ const Game = () => {
                 setFilteredPlayers([]);
                 break;
 
-            case 'irAndOut':
+            case `irAndOut-${playerIndex}`:
                 const newIRAndOut = [...irAndOut];
                 newIRAndOut[playerIndex] = { ...newIRAndOut[playerIndex], name };
                 handlePlayerNameChange('irAndOut', playerIndex, name, 'player');
@@ -197,7 +193,7 @@ const Game = () => {
                 setFilteredPlayers([]);
                 break;
 
-            case 'monthToMonth':
+            case `monthToMonth-${playerIndex}` :
                 const newMonthToMonth = [...monthToMonth];
                 newMonthToMonth[playerIndex] = { ...newMonthToMonth[playerIndex], name };
                 handlePlayerNameChange('monthToMonth', playerIndex, name, 'player');
@@ -205,7 +201,7 @@ const Game = () => {
                 setFilteredPlayers([]);
 
                 break;
-            case 'weekToWeek':
+            case `weekToWeek-${playerIndex}`:
                 const newWeekToWeek = [...weekToWeek];
                 newWeekToWeek[playerIndex] = { ...newWeekToWeek[playerIndex], name };
                 handlePlayerNameChange('weekToWeek', playerIndex, name, 'player');
@@ -215,6 +211,43 @@ const Game = () => {
             default:
                 break;
         }
+    };
+
+    const handleFocus = (fieldName, indexFound) => {
+        let fieldIndex;
+
+        switch (fieldName) {
+            case 'teamWhiteGoalie':
+            case 'teamBlackGoalie':
+                setActiveField(fieldName);
+                break;
+            case 'teamWhitePlayer':
+                fieldIndex = `teamWhitePlayer-${indexFound}`;
+                setActiveField(fieldIndex);
+                break;
+            case 'teamBlackPlayer':
+                fieldIndex = `teamBlackPlayer-${indexFound}`;
+                setActiveField(fieldIndex);
+                break;
+            case 'irAndOut':
+                fieldIndex = `irAndOut-${indexFound}`;
+                setActiveField(fieldIndex);
+                break;
+            case 'monthToMonth':
+                fieldIndex = `monthToMonth-${indexFound}`;
+                setActiveField(fieldIndex);
+                break;
+            case 'weekToWeek':
+                fieldIndex = `weekToWeek-${indexFound}`;
+                setActiveField(fieldIndex);
+                break;
+            default:
+                break;
+        }
+    };
+
+    const handleBlur = () => {
+        setActiveField(null);
     };
 
     return (
@@ -249,6 +282,8 @@ const Game = () => {
                                     );
                                 }}
                                 placeholder='Goalie'
+                                onFocus={() => handleFocus('teamWhiteGoalie')}
+                                onBlur={handleBlur}
                             />
                             {/* dropdown */}
                             <Dropdown
@@ -256,6 +291,7 @@ const Game = () => {
                                 handleNameSelect={handleNameSelect}
                                 index={null}
                                 nameType={'teamWhiteGoalie'}
+                                activeField={activeField}
                             />
 
                             {teamWhitePlayers.map((player, index) => (
@@ -276,13 +312,16 @@ const Game = () => {
                                         placeholder={`Player ${index + 1}`}
                                         onAdd={() => handleAddPlayer('teamWhite')}
                                         onRemove={() => removePlayer('teamWhite', index)}
+                                        onFocus={() => handleFocus('teamWhitePlayer', index)}
+                                        onBlur={handleBlur}
                                     />
                                     {/* dropdown */}
                                     <Dropdown
                                         data={filteredPlayers}
                                         handleNameSelect={handleNameSelect}
                                         index={index}
-                                        nameType={'teamWhitePlayer'}
+                                        nameType={`teamWhitePlayer-${index}`}
+                                        activeField={activeField}
                                     />
                                 </React.Fragment>
                             ))}
@@ -307,6 +346,8 @@ const Game = () => {
                                     );
                                 }}
                                 placeholder='Goalie'
+                                onFocus={() => handleFocus('teamBlackGoalie')}
+                                onBlur={handleBlur}
                             />
                             {/* dropdown */}
                             <Dropdown
@@ -314,6 +355,7 @@ const Game = () => {
                                 handleNameSelect={handleNameSelect}
                                 index={null}
                                 nameType={'teamBlackGoalie'}
+                                activeField={activeField}
                             />
 
                             {teamBlackPlayers.map((player, index) => (
@@ -334,13 +376,16 @@ const Game = () => {
                                         placeholder={`Player ${index + 1}`}
                                         onAdd={() => handleAddPlayer('teamBlack')}
                                         onRemove={() => removePlayer('teamBlack', index)}
+                                        onFocus={() => handleFocus('teamBlackPlayer', index)}
+                                        onBlur={handleBlur}
                                     />
                                     {/* dropdown */}
                                     <Dropdown
                                         data={filteredPlayers}
                                         handleNameSelect={handleNameSelect}
                                         index={index}
-                                        nameType={'teamBlackPlayer'}
+                                        nameType={`teamBlackPlayer-${index}`}
+                                        activeField={activeField}
                                     />
                                 </React.Fragment>
                             ))}
@@ -382,12 +427,15 @@ const Game = () => {
                                         placeholder={`Player ${index + 1}`}
                                         onAdd={() => handleAddPlayer('irAndOut')}
                                         onRemove={() => removePlayer('irAndOut', index)}
+                                        onFocus={() => handleFocus('irAndOut', index)}
+                                        onBlur={handleBlur}
                                     />
                                     <Dropdown
                                         data={filteredPlayers}
                                         handleNameSelect={handleNameSelect}
                                         index={index}
-                                        nameType={'irAndOut'}
+                                        activeField={activeField}
+                                        nameType={`irAndOut-${index}`}
                                     />
                                 </React.Fragment>
                             ))}
@@ -420,12 +468,15 @@ const Game = () => {
                                         placeholder={`Player ${index + 1}`}
                                         onAdd={() => handleAddPlayer('monthToMonth')}
                                         onRemove={() => removePlayer('monthToMonth', index)}
+                                        onFocus={() => handleFocus('monthToMonth', index)}
+                                        onBlur={handleBlur}
                                     />
                                     <Dropdown
                                         data={filteredPlayers}
                                         handleNameSelect={handleNameSelect}
                                         index={index}
-                                        nameType={'monthToMonth'}
+                                        nameType={`monthToMonth-${index}`}
+                                        activeField={activeField}
                                     />
                                 </React.Fragment>
                             ))}
@@ -457,12 +508,15 @@ const Game = () => {
                                         placeholder={`Player ${index + 1}`}
                                         onAdd={() => handleAddPlayer('weekToWeek')}
                                         onRemove={() => removePlayer('weekToWeek', index)}
+                                        onFocus={() => handleFocus('weekToWeek', index)}
+                                        onBlur={handleBlur}
                                     />
                                     <Dropdown
                                         data={filteredPlayers}
                                         handleNameSelect={handleNameSelect}
                                         index={index}
-                                        nameType={'weekToWeek'}
+                                        nameType={`weekToWeek-${index}`}
+                                        activeField={activeField}
                                     />
                                 </React.Fragment>
                             ))}
