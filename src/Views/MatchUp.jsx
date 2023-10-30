@@ -6,7 +6,7 @@ import { fnlPlayers } from '../Utils';
 import Dropdown from '../Molecules/Dropdown/Dropdown';
 import FormDataContext from '../Context';
 
-const Game = () => {
+const MatchUp = () => {
     const {setFormDataArray } = useContext(FormDataContext);
     const [teamWhiteGoalie, setTeamWhiteGoalie] = useState('');
     const [teamBlackGoalie, setTeamBlackGoalie] = useState('');
@@ -51,7 +51,6 @@ const Game = () => {
 
     const handlePlayerNameChange = (team, playerIndex, newName, playerType) => {
         filterPlayersDropdown(newName);
-        // Update the form data with the new name
         setFormData((prevData) => {
             const updatedData = { ...prevData };
             if (playerType === 'goalie') {
@@ -229,7 +228,10 @@ const Game = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setWeekNumber(weekNumber + 1)
+        let newWeekNumber = weekNumber >= 1 ? weekNumber + 1 : 1;
+        setWeekNumber(newWeekNumber);
+        localStorage.setItem('weekNumber', newWeekNumber.toString());
+        
         // Add the current date to the form data
         const currentDate = new Date().toLocaleDateString();
         console.log(weekNumber)
@@ -243,6 +245,13 @@ const Game = () => {
         // Push the form data into the array
         setFormDataArray((prevDataArray) => [...prevDataArray, updatedFormData]);
     };
+    useEffect(() => {
+        const savedWeekNumber = localStorage.getItem('weekNumber');
+        if (savedWeekNumber) {
+            setWeekNumber(Number(savedWeekNumber));
+        }
+    }, []);
+    
 
     useEffect(() => {
         // Load the form data array from local storage
@@ -533,4 +542,4 @@ const Game = () => {
     );
 };
 
-export default Game;
+export default MatchUp;

@@ -103,3 +103,5 @@ export const fnlPlayers = [
             'https://media.licdn.com/dms/image/C4E03AQF1RBoiKWO3LQ/profile-displayphoto-shrink_800_800/0/1611611879603?e=2147483647&v=beta&t=kcoumdBdEBlcgbmwUZErqCNcCZO-MJ3LJ3dPPnrPpmQ',
     },
 ];
+
+export const weeks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];

@@ -1,5 +1,5 @@
 import './App.css';
-import Game from './Views/Game';
+import MatchUp from './Views/MatchUp';
 import { Routes, Route } from 'react-router-dom';
 import Home from './Views/Home';
 import Navbar from './Organisms/Navbar/Navbar';
@@ -14,7 +14,7 @@ function App() {
             <Navbar />
             <Routes>
                 <Route exact path='/' element={<Home />} />
-                <Route path='/Game' element={<Game />} />
+                <Route path='/Matchup' element={<MatchUp />} />
                 <Route path='/Results' element={<MatchResults />} />
                 <Route path='/Players' element={<Players />} />
             </Routes>

@@ -2,17 +2,13 @@ import React from 'react';
 import { useContext } from 'react';
 import FormDataContext from '../Context';
 import Button from '../Atoms/Button/Button';
+import { weeks } from '../Utils';
 const MatchResults = () => {
     const { formDataArray } = useContext(FormDataContext);
-    console.log(formDataArray);
     const [open, setOpen] = React.useState(false);
     const [filterWeek, setFilterWeek] = React.useState([]);
-
-    // figure out how many weeks of fnl
-    const weeks = ['week 1', 'week 2', 'week 3', 'week 4', 'week 5', 'week 6', 'week 7'];
-
-    const filterByWeek = (weekIndex) => {
-        setFilterWeek(formDataArray.filter((index) => index === weekIndex));
+    const filterByWeek = (number) => {
+        setFilterWeek(formDataArray.filter((formData) => formData.week === number));
     };
 
     const onClick = () => {
@@ -24,14 +20,12 @@ const MatchResults = () => {
             filterByWeek(weeks[0]);
         }
     }, [formDataArray]);
-
-    console.log(filterWeek);
     return (
         <div>
             <h1 style={{ textAlign: 'center' }}>All Weekly Matches </h1>
             {/*  have a dropdown of all dates and filter by that */}
             <div style={{ margin: '30px' }}>
-                <Button title='Filter by weeks' onClick={onClick} color='#87CEFA' width={'205px'} />
+                <Button title='Filter by weeks' onClick={onClick} color='#0074D9' width={'205px'} />
                 {open && (
                     <div
                         style={{
@@ -44,9 +38,9 @@ const MatchResults = () => {
                             <div key={index} style={{ padding: '2px' }}>
                                 <p
                                     style={{ cursor: 'pointer', marginLeft: '50px' }}
-                                    onClick={() => filterByWeek(index)}
+                                    onClick={() => filterByWeek(week)}
                                 >
-                                    {week}
+                                    week{week}
                                 </p>
                             </div>
                         ))}
