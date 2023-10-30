@@ -17,6 +17,7 @@ const Game = () => {
     const [weekToWeek, setWeekToWeek] = useState([{ name: '' }]);
     const [filteredPlayers, setFilteredPlayers] = useState([]);
     const [activeField, setActiveField] = useState(null);
+    const [weekNumber, setWeekNumber] = useState(1);
     const [formData, setFormData] = useState({
         game: {
             teamWhite: {
@@ -228,10 +229,10 @@ const Game = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setWeekNumber(weekNumber + 1)
         // Add the current date to the form data
         const currentDate = new Date().toLocaleDateString();
-        const formDataArray = JSON.parse(localStorage.getItem('formDataArray')) || [];
-        const weekNumber = formDataArray.length === 0 ? 1 : formDataArray.length + 1;
+        console.log(weekNumber)
         const updatedFormData = {
             ...formData,
             date: currentDate,
