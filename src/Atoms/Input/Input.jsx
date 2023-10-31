@@ -1,4 +1,5 @@
 import React from 'react';
+import '../Input/Input.css';
 
 function Input({ value, onChange, placeholder, onFocus }) {
 
@@ -9,16 +10,8 @@ function Input({ value, onChange, placeholder, onFocus }) {
             onChange={onChange}
             placeholder={placeholder}
             onFocus={onFocus}
-            style={{
-                listStyle: 'none',
-                width: '300px',
-                padding: '5px',
-                borderLeft: 'none',
-                borderRight: 'none',
-                borderTop: 'none',
-                borderBottom: '2px solid #ccc',
-                outline: 'none',
-            }}
+           
+            className='inputStyle'
         />
     );
 }

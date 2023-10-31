@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Button from '../Atoms/Button/Button';
-import MatchResults from './MatchResults';
-import PlayerInput from '../Molecules/PlayerInput/PlayerInput';
+import InputAndButtons from '../Molecules/InputAndButtons/InputAndButtons';
 import Input from '../Atoms/Input/Input';
 import { fnlPlayers } from '../Utils';
 import Dropdown from '../Molecules/Dropdown/Dropdown';
+import FormDataContext from '../Context';
 
-const Game = () => {
-    const [formDataArray, setFormDataArray] = useState([]);
+const MatchUp = () => {
+    const {setFormDataArray } = useContext(FormDataContext);
     const [teamWhiteGoalie, setTeamWhiteGoalie] = useState('');
     const [teamBlackGoalie, setTeamBlackGoalie] = useState('');
     const [teamWhitePlayers, setTeamWhitePlayers] = useState([{ name: '' }]);
@@ -17,6 +17,7 @@ const Game = () => {
     const [weekToWeek, setWeekToWeek] = useState([{ name: '' }]);
     const [filteredPlayers, setFilteredPlayers] = useState([]);
     const [activeField, setActiveField] = useState(null);
+    const [weekNumber, setWeekNumber] = useState(1);
     const [formData, setFormData] = useState({
         game: {
             teamWhite: {
@@ -50,7 +51,6 @@ const Game = () => {
 
     const handlePlayerNameChange = (team, playerIndex, newName, playerType) => {
         filterPlayersDropdown(newName);
-        // Update the form data with the new name
         setFormData((prevData) => {
             const updatedData = { ...prevData };
             if (playerType === 'goalie') {
@@ -129,30 +129,6 @@ const Game = () => {
         }
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Add the current date to the form data
-        const currentDate = new Date().toLocaleDateString();
-        const formDataArray = JSON.parse(localStorage.getItem('formDataArray')) || [];
-        const weekNumber = formDataArray.length === 0 ? 1 : formDataArray.length + 1;
-        const updatedFormData = {
-            ...formData,
-            date: currentDate,
-            week: weekNumber,
-        };
-        // Save the form data to local storage
-        localStorage.setItem('formDataArray', JSON.stringify(updatedFormData));
-        // Push the form data into the array
-        setFormDataArray((prevDataArray) => [...prevDataArray, updatedFormData]);
-    };
-
-    useEffect(() => {
-        // Load the form data array from local storage
-        const savedFormDataArray = JSON.parse(localStorage.getItem('formDataArray')) || [];
-        if (savedFormDataArray.length > 0) {
-            setFormDataArray(savedFormDataArray);
-        }
-    }, []);
 
     // set the input value to the name of the player selected
     const handleNameSelect = (name, inputType, playerIndex) => {
@@ -250,6 +226,41 @@ const Game = () => {
         setActiveField(null);
     };
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        let newWeekNumber = weekNumber >= 1 ? weekNumber + 1 : 1;
+        setWeekNumber(newWeekNumber);
+        localStorage.setItem('weekNumber', newWeekNumber.toString());
+        
+        // Add the current date to the form data
+        const currentDate = new Date().toLocaleDateString();
+        console.log(weekNumber)
+        const updatedFormData = {
+            ...formData,
+            date: currentDate,
+            week: weekNumber,
+        };
+        // Save the form data to local storage
+        localStorage.setItem('formDataArray', JSON.stringify(updatedFormData));
+        // Push the form data into the array
+        setFormDataArray((prevDataArray) => [...prevDataArray, updatedFormData]);
+    };
+    useEffect(() => {
+        const savedWeekNumber = localStorage.getItem('weekNumber');
+        if (savedWeekNumber) {
+            setWeekNumber(Number(savedWeekNumber));
+        }
+    }, []);
+    
+
+    useEffect(() => {
+        // Load the form data array from local storage
+        const savedFormDataArray = JSON.parse(localStorage.getItem('formDataArray')) || [];
+        if (savedFormDataArray.length > 0) {
+            setFormDataArray(savedFormDataArray);
+        }
+    }, );
+
     return (
         <>
             <h1 style={{ textAlign: 'center' }}>FNL Roll Call</h1>
@@ -296,7 +307,7 @@ const Game = () => {
 
                             {teamWhitePlayers.map((player, index) => (
                                 <React.Fragment key={index}>
-                                    <PlayerInput
+                                    <InputAndButtons
                                         value={player.name}
                                         onChange={(e) => {
                                             const newPlayers = [...teamWhitePlayers];
@@ -360,7 +371,7 @@ const Game = () => {
 
                             {teamBlackPlayers.map((player, index) => (
                                 <React.Fragment key={index}>
-                                    <PlayerInput
+                                    <InputAndButtons
                                         value={player.name}
                                         onChange={(e) => {
                                             const newPlayers = [...teamBlackPlayers];
@@ -411,7 +422,7 @@ const Game = () => {
                             <h3>IR/Out</h3>
                             {irAndOut.map((player, index) => (
                                 <React.Fragment key={index}>
-                                    <PlayerInput
+                                    <InputAndButtons
                                         value={player.name}
                                         onChange={(e) => {
                                             const newPlayers = [...irAndOut];
@@ -452,7 +463,7 @@ const Game = () => {
                             <h3>Month to Month</h3>
                             {monthToMonth.map((player, index) => (
                                 <React.Fragment key={index}>
-                                    <PlayerInput
+                                    <InputAndButtons
                                         value={player.name}
                                         onChange={(e) => {
                                             const newPlayers = [...monthToMonth];
@@ -492,7 +503,7 @@ const Game = () => {
                             <h3>Week to week</h3>
                             {weekToWeek.map((player, index) => (
                                 <React.Fragment key={index}>
-                                    <PlayerInput
+                                    <InputAndButtons
                                         value={player.name}
                                         onChange={(e) => {
                                             const newPlayers = [...weekToWeek];
@@ -527,9 +538,8 @@ const Game = () => {
                     </div>
                 </form>
             </div>
-            <MatchResults formDataArray={formDataArray} />
         </>
     );
 };
 
-export default Game;
+export default MatchUp;
