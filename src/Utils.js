@@ -71,7 +71,7 @@ export const fnlPlayers = [
         age: 31,
         shootHand: 'Right',
         imageUrl:
-            'https://media.licdn.com/dms/image/C4E03AQG3HDp9V7bijQ/profile-displayphoto-shrink_800_800/0/1623297486937?e=2147483647&v=beta&t=a9AlrMuJt85Qa978dmwFO_fg6ho0G5UIopAEzvAVK7Q',
+            'https://smartcdn.gprod.postmedia.digital/v1/dynamic_resize/sws_path/suns-prod-images/1297249920110_ORIGINAL.jpg?quality=80&size=650x',
     },
     {
         id: 8,
@@ -101,6 +101,44 @@ export const fnlPlayers = [
         shootHand: 'left',
         imageUrl:
             'https://media.licdn.com/dms/image/C4E03AQF1RBoiKWO3LQ/profile-displayphoto-shrink_800_800/0/1611611879603?e=2147483647&v=beta&t=kcoumdBdEBlcgbmwUZErqCNcCZO-MJ3LJ3dPPnrPpmQ',
+    },
+
+    {
+        id: 11,
+        name: 'Deep Grewal',
+        team: ['white', 'black'],
+        age: 40,
+        shootHand: 'left',
+        imageUrl: 'https://pbs.twimg.com/profile_images/1642711347447177216/xmGhPdp5_400x400.jpg',
+    },
+
+    {
+        id: 12,
+        name: 'Sundeep Gupta',
+        team: ['white', 'black'],
+        age: 40,
+        shootHand: 'left',
+        imageUrl:
+            'https://media.licdn.com/dms/image/C4E03AQG0VGgg1aBE3g/profile-displayphoto-shrink_800_800/0/1560816335630?e=2147483647&v=beta&t=VA3id5QJTXK7t0NqeAE1qZ0o_Gaqsu9hVUN5AXX-4u0',
+    },
+
+    {
+        id: 13,
+        name: 'Jessie',
+        team: ['white', 'black'],
+        age: 40,
+        shootHand: 'left',
+        imageUrl: 'https://deadline.com/wp-content/uploads/2019/07/cameron-boyce.jpg?w=1000',
+    },
+
+    {
+        id: 14,
+        name: 'AP Sharma',
+        team: ['white', 'black'],
+        age: 40,
+        shootHand: 'left',
+        imageUrl:
+            'https://www.qatar-tribune.com/uploads/imported_images/data/20211003/images/575697.jpg',
     },
 ];
 

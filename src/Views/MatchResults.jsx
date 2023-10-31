@@ -20,6 +20,7 @@ const MatchResults = () => {
             filterByWeek(weeks[0]);
         }
     }, [formDataArray]);
+
     return (
         <div>
             <h1 style={{ textAlign: 'center' }}>All Weekly Matches </h1>
