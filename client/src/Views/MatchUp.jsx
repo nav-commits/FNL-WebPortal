@@ -7,7 +7,7 @@ import Dropdown from '../Molecules/Dropdown/Dropdown';
 import FormDataContext from '../Context';
 
 const MatchUp = () => {
-    const { setFormDataArray, FormDataArray } = useContext(FormDataContext);
+    const { FormDataArray } = useContext(FormDataContext);
     const [teamWhiteGoalie, setTeamWhiteGoalie] = useState('');
     const [teamBlackGoalie, setTeamBlackGoalie] = useState('');
     const [teamWhitePlayers, setTeamWhitePlayers] = useState([{ name: '' }]);
@@ -17,6 +17,7 @@ const MatchUp = () => {
     const [weekToWeek, setWeekToWeek] = useState([{ name: '' }]);
     const [filteredPlayers, setFilteredPlayers] = useState([]);
     const [activeField, setActiveField] = useState(null);
+    const[weekNumber, setWeekNumber] = useState(1);
     const [formData, setFormData] = useState({
         game: {
             teamWhite: {
@@ -224,18 +225,24 @@ const MatchUp = () => {
         setActiveField(null);
     };
 
-    const handleSubmit = (e) => {
+ const handleSubmit = (e) => {
         e.preventDefault();
-        const url = '/games/game'; 
+        const url = '/games/game';
+
+        // Add weekNumber to formData
+        const dataWithWeekNumber = { ...formData, weekNumber };
+
         fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(formData),
+            body: JSON.stringify(dataWithWeekNumber),
         })
             .then((response) => {
                 if (response.ok) {
+                    // Increment weekNumber after successful post
+                    setWeekNumber(weekNumber + 1);
                     return response.json();
                 } else {
                     throw new Error('POST request failed');
@@ -250,22 +257,6 @@ const MatchUp = () => {
     };
     console.log(FormDataArray)
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch('games/Games');
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const responseData = await response.json();
-                console.log(responseData)
-                setFormDataArray((prevDataArray) => [...prevDataArray, responseData]);
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        };
-        fetchData();
-    },[FormDataArray]);
 
     return (
         <>
