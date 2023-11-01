@@ -7,7 +7,7 @@ import Dropdown from '../Molecules/Dropdown/Dropdown';
 import FormDataContext from '../Context';
 
 const MatchUp = () => {
-    const {setFormDataArray } = useContext(FormDataContext);
+    const { setFormDataArray, FormDataArray } = useContext(FormDataContext);
     const [teamWhiteGoalie, setTeamWhiteGoalie] = useState('');
     const [teamBlackGoalie, setTeamBlackGoalie] = useState('');
     const [teamWhitePlayers, setTeamWhitePlayers] = useState([{ name: '' }]);
@@ -129,7 +129,6 @@ const MatchUp = () => {
         }
     };
 
-
     // set the input value to the name of the player selected
     const handleNameSelect = (name, inputType, playerIndex) => {
         switch (inputType) {
@@ -169,7 +168,7 @@ const MatchUp = () => {
                 setFilteredPlayers([]);
                 break;
 
-            case `monthToMonth-${playerIndex}` :
+            case `monthToMonth-${playerIndex}`:
                 const newMonthToMonth = [...monthToMonth];
                 newMonthToMonth[playerIndex] = { ...newMonthToMonth[playerIndex], name };
                 handlePlayerNameChange('monthToMonth', playerIndex, name, 'player');
@@ -228,30 +227,55 @@ const MatchUp = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        let newWeekNumber = weekNumber >= 1 ? weekNumber + 1 : 1;
-        setWeekNumber(newWeekNumber);
-        localStorage.setItem('weekNumber', newWeekNumber.toString());
-        
-        // Add the current date to the form data
-        const currentDate = new Date().toLocaleDateString();
-        console.log(weekNumber)
-        const updatedFormData = {
-            ...formData,
-            date: currentDate,
-            week: weekNumber,
-        };
-        // Save the form data to local storage
-        localStorage.setItem('formDataArray', JSON.stringify(updatedFormData));
-        // Push the form data into the array
-        setFormDataArray((prevDataArray) => [...prevDataArray, updatedFormData]);
+
+        // let newWeekNumber = weekNumber >= 1 ? weekNumber + 1 : 1;
+        // setWeekNumber(newWeekNumber);
+        // localStorage.setItem('weekNumber', newWeekNumber.toString());
+
+        // // Add the current date to the form data
+        // const currentDate = new Date().toLocaleDateString();
+        // console.log(weekNumber)
+        // const updatedFormData = {
+        //     ...formData,
+        //     date: currentDate,
+        //     week: weekNumber,
+        // };
+        // // Save the form data to local storage
+        // localStorage.setItem('formDataArray', JSON.stringify(updatedFormData));
+        // // Push the form data into the array
+        // setFormDataArray((prevDataArray) => [...prevDataArray, updatedFormData]);
+        const url = 'http://localhost:5000/games/game'; // Replace with your API endpoint
+        fetch(url, {
+            method: 'POST',
+            mode: 'cors', // add this line
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('POST request failed');
+                }
+            })
+            .then((responseData) => {
+                console.log(responseData);
+                setFormDataArray((prevDataArray) => [...prevDataArray, responseData]);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     };
-    useEffect(() => {
-        const savedWeekNumber = localStorage.getItem('weekNumber');
-        if (savedWeekNumber) {
-            setWeekNumber(Number(savedWeekNumber));
-        }
-    }, []);
-    
+    console.log(FormDataArray)
+
+    // useEffect(() => {
+    //     const savedWeekNumber = localStorage.getItem('weekNumber');
+    //     if (savedWeekNumber) {
+    //         setWeekNumber(Number(savedWeekNumber));
+    //     }
+    // }, []);
 
     useEffect(() => {
         // Load the form data array from local storage
@@ -259,7 +283,7 @@ const MatchUp = () => {
         if (savedFormDataArray.length > 0) {
             setFormDataArray(savedFormDataArray);
         }
-    }, );
+    });
 
     return (
         <>
