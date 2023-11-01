@@ -17,7 +17,6 @@ const MatchUp = () => {
     const [weekToWeek, setWeekToWeek] = useState([{ name: '' }]);
     const [filteredPlayers, setFilteredPlayers] = useState([]);
     const [activeField, setActiveField] = useState(null);
-    const [weekNumber, setWeekNumber] = useState(1);
     const [formData, setFormData] = useState({
         game: {
             teamWhite: {
@@ -227,27 +226,9 @@ const MatchUp = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        // let newWeekNumber = weekNumber >= 1 ? weekNumber + 1 : 1;
-        // setWeekNumber(newWeekNumber);
-        // localStorage.setItem('weekNumber', newWeekNumber.toString());
-
-        // // Add the current date to the form data
-        // const currentDate = new Date().toLocaleDateString();
-        // console.log(weekNumber)
-        // const updatedFormData = {
-        //     ...formData,
-        //     date: currentDate,
-        //     week: weekNumber,
-        // };
-        // // Save the form data to local storage
-        // localStorage.setItem('formDataArray', JSON.stringify(updatedFormData));
-        // // Push the form data into the array
-        // setFormDataArray((prevDataArray) => [...prevDataArray, updatedFormData]);
-        const url = 'http://localhost:5000/games/game'; // Replace with your API endpoint
+        const url = '/games/game'; 
         fetch(url, {
             method: 'POST',
-            mode: 'cors', // add this line
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -262,7 +243,6 @@ const MatchUp = () => {
             })
             .then((responseData) => {
                 console.log(responseData);
-                setFormDataArray((prevDataArray) => [...prevDataArray, responseData]);
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -270,20 +250,22 @@ const MatchUp = () => {
     };
     console.log(FormDataArray)
 
-    // useEffect(() => {
-    //     const savedWeekNumber = localStorage.getItem('weekNumber');
-    //     if (savedWeekNumber) {
-    //         setWeekNumber(Number(savedWeekNumber));
-    //     }
-    // }, []);
-
     useEffect(() => {
-        // Load the form data array from local storage
-        const savedFormDataArray = JSON.parse(localStorage.getItem('formDataArray')) || [];
-        if (savedFormDataArray.length > 0) {
-            setFormDataArray(savedFormDataArray);
-        }
-    });
+        const fetchData = async () => {
+            try {
+                const response = await fetch('games/Games');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const responseData = await response.json();
+                console.log(responseData)
+                setFormDataArray((prevDataArray) => [...prevDataArray, responseData]);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+        fetchData();
+    },[FormDataArray]);
 
     return (
         <>

@@ -23,7 +23,12 @@ const gameSchema = new mongoose.Schema({
             Team: String,
             players: [{}],
         },
-    }
+        createdAt: {
+            type: Date,
+            default: Date.now, // Set the default value to the current date and time
+        },
+    },
 });
+
 
 module.exports = mongoose.model('Game', gameSchema);

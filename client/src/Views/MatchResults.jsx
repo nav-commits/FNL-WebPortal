@@ -7,6 +7,7 @@ const MatchResults = () => {
     const { formDataArray } = useContext(FormDataContext);
     const [open, setOpen] = React.useState(false);
     const [filterWeek, setFilterWeek] = React.useState([]);
+    console.log(formDataArray)
     const filterByWeek = (number) => {
         setFilterWeek(formDataArray.filter((formData) => formData.week === number));
     };
