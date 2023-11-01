@@ -227,6 +227,23 @@ const MatchUp = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        // let newWeekNumber = weekNumber >= 1 ? weekNumber + 1 : 1;
+        // setWeekNumber(newWeekNumber);
+        // localStorage.setItem('weekNumber', newWeekNumber.toString());
+
+        // // Add the current date to the form data
+        // const currentDate = new Date().toLocaleDateString();
+        // console.log(weekNumber)
+        // const updatedFormData = {
+        //     ...formData,
+        //     date: currentDate,
+        //     week: weekNumber,
+        // };
+        // // Save the form data to local storage
+        // localStorage.setItem('formDataArray', JSON.stringify(updatedFormData));
+        // // Push the form data into the array
+        // setFormDataArray((prevDataArray) => [...prevDataArray, updatedFormData]);
         const url = 'http://localhost:5000/games/game'; // Replace with your API endpoint
         fetch(url, {
             method: 'POST',
@@ -252,6 +269,13 @@ const MatchUp = () => {
             });
     };
     console.log(FormDataArray)
+
+    // useEffect(() => {
+    //     const savedWeekNumber = localStorage.getItem('weekNumber');
+    //     if (savedWeekNumber) {
+    //         setWeekNumber(Number(savedWeekNumber));
+    //     }
+    // }, []);
 
     useEffect(() => {
         // Load the form data array from local storage
