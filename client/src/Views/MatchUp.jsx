@@ -7,7 +7,7 @@ import Dropdown from '../Molecules/Dropdown/Dropdown';
 import FormDataContext from '../Context';
 
 const MatchUp = () => {
-    const { setFormDataArray, FormDataArray } = useContext(FormDataContext);
+    const { FormDataArray } = useContext(FormDataContext);
     const [teamWhiteGoalie, setTeamWhiteGoalie] = useState('');
     const [teamBlackGoalie, setTeamBlackGoalie] = useState('');
     const [teamWhitePlayers, setTeamWhitePlayers] = useState([{ name: '' }]);
@@ -17,7 +17,7 @@ const MatchUp = () => {
     const [weekToWeek, setWeekToWeek] = useState([{ name: '' }]);
     const [filteredPlayers, setFilteredPlayers] = useState([]);
     const [activeField, setActiveField] = useState(null);
-    const [weekNumber, setWeekNumber] = useState(1);
+    const[weekNumber, setWeekNumber] = useState(1);
     const [formData, setFormData] = useState({
         game: {
             teamWhite: {
@@ -225,36 +225,24 @@ const MatchUp = () => {
         setActiveField(null);
     };
 
-    const handleSubmit = (e) => {
+ const handleSubmit = (e) => {
         e.preventDefault();
+        const url = '/games/game';
 
-        // let newWeekNumber = weekNumber >= 1 ? weekNumber + 1 : 1;
-        // setWeekNumber(newWeekNumber);
-        // localStorage.setItem('weekNumber', newWeekNumber.toString());
+        // Add weekNumber to formData
+        const dataWithWeekNumber = { ...formData, weekNumber };
 
-        // // Add the current date to the form data
-        // const currentDate = new Date().toLocaleDateString();
-        // console.log(weekNumber)
-        // const updatedFormData = {
-        //     ...formData,
-        //     date: currentDate,
-        //     week: weekNumber,
-        // };
-        // // Save the form data to local storage
-        // localStorage.setItem('formDataArray', JSON.stringify(updatedFormData));
-        // // Push the form data into the array
-        // setFormDataArray((prevDataArray) => [...prevDataArray, updatedFormData]);
-        const url = 'http://localhost:5000/games/game'; // Replace with your API endpoint
         fetch(url, {
             method: 'POST',
-            mode: 'cors', // add this line
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(formData),
+            body: JSON.stringify(dataWithWeekNumber),
         })
             .then((response) => {
                 if (response.ok) {
+                    // Increment weekNumber after successful post
+                    setWeekNumber(weekNumber + 1);
                     return response.json();
                 } else {
                     throw new Error('POST request failed');
@@ -262,7 +250,6 @@ const MatchUp = () => {
             })
             .then((responseData) => {
                 console.log(responseData);
-                setFormDataArray((prevDataArray) => [...prevDataArray, responseData]);
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -270,20 +257,6 @@ const MatchUp = () => {
     };
     console.log(FormDataArray)
 
-    // useEffect(() => {
-    //     const savedWeekNumber = localStorage.getItem('weekNumber');
-    //     if (savedWeekNumber) {
-    //         setWeekNumber(Number(savedWeekNumber));
-    //     }
-    // }, []);
-
-    useEffect(() => {
-        // Load the form data array from local storage
-        const savedFormDataArray = JSON.parse(localStorage.getItem('formDataArray')) || [];
-        if (savedFormDataArray.length > 0) {
-            setFormDataArray(savedFormDataArray);
-        }
-    });
 
     return (
         <>

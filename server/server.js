@@ -34,7 +34,7 @@ app.use('/players', playerRoute);
 app.use('/games', gameRoute);
 
 const corsOptions = {
-    origin: 'http://localhost:5000',
+    origin: 'http://localhost:3000',
     methods: ['GET','HEAD','PUT','PATCH','POST','DELETE']
 };
 app.use(cors(corsOptions));
