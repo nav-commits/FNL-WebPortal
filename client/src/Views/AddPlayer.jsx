@@ -49,8 +49,7 @@ function AddPlayer() {
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
         const url = URL.createObjectURL(file);
-        const cleanUrl = url.replace('blob:', '');
-        setAddPlayer({ ...addPlayer, img: cleanUrl });
+        setAddPlayer({ ...addPlayer, img: url });
     };
 
     return (
