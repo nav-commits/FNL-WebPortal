@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext,  useState } from 'react';
 import Button from '../Atoms/Button/Button';
 import InputAndButtons from '../Molecules/InputAndButtons/InputAndButtons';
 import Input from '../Atoms/Input/Input';
