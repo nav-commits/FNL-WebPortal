@@ -6,7 +6,7 @@ const playerSchema = new mongoose.Schema({
     team: [String],
     age: Number,
     shootHand: String,
-    imageUrl: String,
+    img: String,
 });
 
 module.exports = mongoose.model('players', playerSchema);

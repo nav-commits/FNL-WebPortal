@@ -48,7 +48,7 @@ const MatchResults = () => {
     return (
         <div style={{ position: 'relative' }}>
             <h1 style={{ textAlign: 'center' }}>All Weekly Matches </h1>
-            <Button title='Filter by weeks' onClick={onClick} color='#0074D9'  width={'205px'} />
+            <Button title='Filter by weeks' onClick={onClick} color='#0074D9' width={'205px'} />
             {open && (
                 <div
                     style={{
@@ -57,7 +57,7 @@ const MatchResults = () => {
                         border: '1px solid black',
                         borderRadius: '10px',
                         zIndex: 1,
-                        margin: '10px'
+                        margin: '10px',
                     }}
                 >
                     {weeks.map((week, index) => (

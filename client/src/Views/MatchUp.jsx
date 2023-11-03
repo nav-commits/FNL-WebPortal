@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext,  useState } from 'react';
 import Button from '../Atoms/Button/Button';
 import InputAndButtons from '../Molecules/InputAndButtons/InputAndButtons';
 import Input from '../Atoms/Input/Input';
@@ -17,7 +17,7 @@ const MatchUp = () => {
     const [weekToWeek, setWeekToWeek] = useState([{ name: '' }]);
     const [filteredPlayers, setFilteredPlayers] = useState([]);
     const [activeField, setActiveField] = useState(null);
-    const[weekNumber, setWeekNumber] = useState(1);
+    const [weekNumber, setWeekNumber] = useState(1);
     const [formData, setFormData] = useState({
         game: {
             teamWhite: {
@@ -225,7 +225,7 @@ const MatchUp = () => {
         setActiveField(null);
     };
 
- const handleSubmit = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         const url = '/games/game';
 
@@ -242,7 +242,14 @@ const MatchUp = () => {
             .then((response) => {
                 if (response.ok) {
                     // Increment weekNumber after successful post
-                    setWeekNumber(weekNumber + 1);
+                    const newWeekNumber = weekNumber + 1;
+                    setWeekNumber(newWeekNumber);
+                    setFormData(prevFormData => ({
+                        game: {
+                            ...prevFormData.game,
+                            weekNumber: newWeekNumber,
+                        },
+                    }));
                     return response.json();
                 } else {
                     throw new Error('POST request failed');
@@ -255,8 +262,7 @@ const MatchUp = () => {
                 console.error('Error:', error);
             });
     };
-    console.log(FormDataArray)
-
+    console.log(FormDataArray);
 
     return (
         <>

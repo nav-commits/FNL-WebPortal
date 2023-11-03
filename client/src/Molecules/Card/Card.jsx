@@ -8,7 +8,7 @@ function Card({ fnlPlayers }) {
                 <div key={index} className='card'>
                     <div className='cardImageContainer'>
                         <img
-                            src={player.imageUrl}
+                            src={player.img}
                             alt={player.name}
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />

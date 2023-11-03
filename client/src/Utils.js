@@ -1,4 +1,6 @@
+//  this will be replace with get endpoint for players
 export const fnlPlayers = [
+
     {
         id: 1,
         name: 'Nav Dhamrait',
