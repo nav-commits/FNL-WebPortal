@@ -1,6 +1,5 @@
 //  this will be replace with get endpoint for players
 export const fnlPlayers = [
-
     {
         id: 1,
         name: 'Nav Dhamrait',
@@ -76,7 +75,7 @@ export const fnlPlayers = [
             'https://smartcdn.gprod.postmedia.digital/v1/dynamic_resize/sws_path/suns-prod-images/1297249920110_ORIGINAL.jpg?quality=80&size=650x',
     },
     {
-        id: 8,
+        id: 9,
         name: 'Kali',
         team: ['white', 'black'],
         age: 31,
@@ -86,7 +85,7 @@ export const fnlPlayers = [
     },
 
     {
-        id: 9,
+        id: 10,
         name: 'Sherman Heer',
         team: ['white', 'black'],
         age: 38,
@@ -96,7 +95,7 @@ export const fnlPlayers = [
     },
 
     {
-        id: 10,
+        id: 11,
         name: 'Harry Jangi',
         team: ['white', 'black'],
         age: 40,
@@ -106,7 +105,7 @@ export const fnlPlayers = [
     },
 
     {
-        id: 11,
+        id: 12,
         name: 'Deep Grewal',
         team: ['white', 'black'],
         age: 40,
@@ -115,7 +114,7 @@ export const fnlPlayers = [
     },
 
     {
-        id: 12,
+        id: 13,
         name: 'Sundeep Gupta',
         team: ['white', 'black'],
         age: 40,
@@ -125,7 +124,7 @@ export const fnlPlayers = [
     },
 
     {
-        id: 13,
+        id: 14,
         name: 'Jessie',
         team: ['white', 'black'],
         age: 40,
@@ -134,8 +133,17 @@ export const fnlPlayers = [
     },
 
     {
-        id: 14,
+        id: 15,
         name: 'AP Sharma',
+        team: ['white', 'black'],
+        age: 40,
+        shootHand: 'left',
+        imageUrl:
+            'https://www.qatar-tribune.com/uploads/imported_images/data/20211003/images/575697.jpg',
+    },
+    {
+        id: 16,
+        name: 'Kip',
         team: ['white', 'black'],
         age: 40,
         shootHand: 'left',
