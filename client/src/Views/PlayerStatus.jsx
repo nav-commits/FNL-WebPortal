@@ -5,6 +5,7 @@ import Button from '../Atoms/Button/Button';
 
 function PlayerStatus() {
     const [players, setPlayers] = useState(fnlPlayers);
+    const [newResourceId, setNewResourceId] = useState(null);
 
     const [categories, setCategories] = useState([
         { id: 'monthToMonth', name: 'monthToMonth', players: [] },
@@ -64,11 +65,12 @@ function PlayerStatus() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(categoriesObject),
+            body: JSON.stringify({categoriesObject }),
         })
             .then((res) => res.json())
             .then((data) => {
                 console.log('Success:', data);
+                setNewResourceId(data._id); 
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -77,7 +79,7 @@ function PlayerStatus() {
 
     const navigate = useNavigate();
     const matchHandler = () => {
-        navigate(`/Matchup`);
+        navigate(`/Matchup/${newResourceId}`);
     };
 
     const renderPlayer = (player) => (

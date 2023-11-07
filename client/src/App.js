@@ -17,7 +17,7 @@ function App() {
             <Routes>
                 <Route exact path='/' element={<Home />} />
                 <Route path='/PlayerStatus' element={<PlayerStatus />} />
-                <Route path='/Matchup' element={<MatchUp />} />
+                <Route path='/Matchup/:id' element={<MatchUp />} />
                 <Route path='/Results' element={<MatchResults />} />
                 <Route path='/Players' element={<Players />} />
                 <Route path='/AddPlayer' element={<AddPlayer />} />
