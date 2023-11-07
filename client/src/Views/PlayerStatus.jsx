@@ -65,7 +65,7 @@ function PlayerStatus() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({categoriesObject }),
+            body: JSON.stringify(categoriesObject),
         })
             .then((res) => res.json())
             .then((data) => {
