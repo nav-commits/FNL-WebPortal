@@ -11,18 +11,6 @@ const gameSchema = new mongoose.Schema({
             players: [{}],
             goalie: String,
         },
-        irAndOut: {
-            Team: String,
-            players: [{}],
-        },
-        monthToMonth: {
-            Team: String,
-            players: [{}],
-        },
-        weekToWeek: {
-            Team: String,
-            players: [{}],
-        },
         createdAt: {
             type: Date,
             default: Date.now, // Set the default value to the current date and time
