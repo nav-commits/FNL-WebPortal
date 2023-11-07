@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { fnlPlayers } from '../Utils';
+import { useNavigate } from 'react-router-dom';
+import Button from '../Atoms/Button/Button';
 
 function PlayerStatus() {
     const [players, setPlayers] = useState(fnlPlayers);
 
     const [categories, setCategories] = useState([
-        { id: 'month to Month', name: 'month to Month', players: [] },
-        { id: 'week to Week', name: 'week to Week', players: [] },
+        { id: 'monthToMonth', name: 'monthToMonth', players: [] },
+        { id: 'weekToWeek', name: 'weekToWeek', players: [] },
         { id: 'IR', name: 'IR', players: [] },
-        { id: '50/50', name: '50/50', players: [] },
+        { id: 'fiftyFifty', name: 'fiftyFifty', players: [] },
     ]);
 
     const handleDragStart = (e, player) => {
@@ -35,7 +37,7 @@ function PlayerStatus() {
                 }
             } else {
                 // If the player is in any other category, remove him
-                if (cat.players.some((p) => p.id ===  +playerId)) {
+                if (cat.players.some((p) => p.id === +playerId)) {
                     return {
                         ...cat,
                         players: cat.players.filter((p) => p.id !== +playerId),
@@ -48,7 +50,36 @@ function PlayerStatus() {
         setCategories(updatedCategories);
     };
 
- 
+    const handleSubmit = (e) => {
+        console.log('submitting');
+        e.preventDefault();
+        const categoriesObject = categories.reduce((obj, category) => {
+            obj[category.id] = category;
+            console.log(category);
+            return obj;
+        }, {});
+        console.log(categoriesObject);
+        fetch('/playerStatus/addPlayerStatus', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(categoriesObject),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    };
+
+    const navigate = useNavigate();
+    const matchHandler = () => {
+        navigate(`/Matchup`);
+    };
+
     const renderPlayer = (player) => (
         <div key={player.id} onDragStart={(e) => handleDragStart(e, player)} draggable>
             {player.name}
@@ -85,19 +116,24 @@ function PlayerStatus() {
                 <h2>Players</h2>
                 {players.map((player) => renderPlayer(player))}
             </div>
-            <div style={{ margin: '30px' }}>
-                <h2 style={{ textAlign: 'center' }}>Categories</h2>
-                <div
-                    style={{
-                        margin: '30px',
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                    }}
-                >
-                    {categories.map((category) => renderCategory(category))}
+            <form onSubmit={handleSubmit}>
+                <div style={{ margin: '30px' }}>
+                    <h2 style={{ textAlign: 'center' }}>Categories</h2>
+                    <div
+                        style={{
+                            margin: '30px',
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        {categories.map((category) => renderCategory(category))}
+                    </div>
                 </div>
-            </div>
+               
+                <Button title='Submit' color='#0074D9' width={'205px'} type='submit' />
+            </form>
+            <Button marginTop={"20px"} title='Matchup' color='#0074D9' width={'205px'} type={'button'} onClick={matchHandler}  />
         </div>
     );
 }

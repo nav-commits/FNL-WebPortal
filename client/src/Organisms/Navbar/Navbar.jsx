@@ -39,10 +39,10 @@ function Navbar() {
                 </Link>
 
                 <Link
-                    to='/Matchup'
+                    to='/PlayerStatus'
                     style={{ textDecoration: 'none', color: 'white', fontSize: '1.2rem' }}
                 >
-                    Matchup
+                    PlayerStatus
                 </Link>
                 <Link
                     to='/Results'

@@ -16,11 +16,11 @@ function App() {
             <Navbar />
             <Routes>
                 <Route exact path='/' element={<Home />} />
+                <Route path='/PlayerStatus' element={<PlayerStatus />} />
                 <Route path='/Matchup' element={<MatchUp />} />
                 <Route path='/Results' element={<MatchResults />} />
                 <Route path='/Players' element={<Players />} />
                 <Route path='/AddPlayer' element={<AddPlayer />} />
-                <Route path='/PlayerStatus' element={<PlayerStatus />} />
             </Routes>
         </FormDataProvider>
     );

@@ -11,6 +11,7 @@ const uri = process.env.MONGODB_URI;
 
 const playerRoute = require('./routes/PlayerRoutes/PlayerRoutes');
 const gameRoute = require('./routes/GameRoutes/GameRoutes');
+const playerStatusRoute = require('./routes/PlayerStatusRoutes/PlayerStatusRoutes');
 
 // database connection
 async function connect() {
@@ -32,13 +33,13 @@ app.use(bodyParser.json());
 
 app.use('/players', playerRoute);
 app.use('/games', gameRoute);
+app.use('/playerStatus', playerStatusRoute);
 
 const corsOptions = {
     origin: 'http://localhost:3000',
-    methods: ['GET','HEAD','PUT','PATCH','POST','DELETE']
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
 };
 app.use(cors(corsOptions));
-
 
 app.listen(port, () => {
     console.log(`Node.js server is running on port ${port}`);
