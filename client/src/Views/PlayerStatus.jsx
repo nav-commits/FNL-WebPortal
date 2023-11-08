@@ -15,22 +15,22 @@ function PlayerStatus() {
     ]);
 
     const handleDragStart = (e, player) => {
-        e.dataTransfer.setData('playerId', player.id);
+        e.dataTransfer.setData('player', JSON.stringify(player));
     };
-
     const handleDrop = (e, category) => {
         e.preventDefault();
-        const playerId = e.dataTransfer.getData('playerId');
-        const player = players.find((p) => p.id === +playerId);
-        if (!player) {
-            console.error(`No player found with id ${playerId}`);
-            return;
-        }
+        // Retrieve the player object from the data transfer
+        const player = JSON.parse(e.dataTransfer.getData('player'));
+        console.log(player);
+
+        // Create a copy of the players array and remove the player
+        const updatedPlayers = players.filter((p) => p.username !== player.username);
+
         const updatedCategories = categories.map((cat) => {
             // If the player is in the category where we want to move him
             if (cat.id === category.id) {
                 // If the player is not already in this category, add him
-                if (!cat.players.some((p) => p.id === +playerId)) {
+                if (!cat.players.some((p) => p.username === player.username)) {
                     return {
                         ...cat,
                         players: [...cat.players, player],
@@ -38,16 +38,17 @@ function PlayerStatus() {
                 }
             } else {
                 // If the player is in any other category, remove him
-                if (cat.players.some((p) => p.id === +playerId)) {
+                if (cat.players.some((p) => p.username === player.username)) {
                     return {
                         ...cat,
-                        players: cat.players.filter((p) => p.id !== +playerId),
+                        players: cat.players.filter((p) => p.username !== player.username),
                     };
                 }
             }
             return cat;
         });
 
+        setPlayers(updatedPlayers);
         setCategories(updatedCategories);
     };
 
@@ -70,7 +71,7 @@ function PlayerStatus() {
             .then((res) => res.json())
             .then((data) => {
                 console.log('Success:', data);
-                setNewResourceId(data._id); 
+                setNewResourceId(data._id);
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -132,10 +133,17 @@ function PlayerStatus() {
                         {categories.map((category) => renderCategory(category))}
                     </div>
                 </div>
-               
+
                 <Button title='Submit' color='#0074D9' width={'205px'} type='submit' />
             </form>
-            <Button marginTop={"20px"} title='Matchup' color='#0074D9' width={'205px'} type={'button'} onClick={matchHandler}  />
+            <Button
+                marginTop={'20px'}
+                title='Matchup'
+                color='#0074D9'
+                width={'205px'}
+                type={'button'}
+                onClick={matchHandler}
+            />
         </div>
     );
 }
