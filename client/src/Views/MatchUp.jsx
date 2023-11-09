@@ -50,9 +50,14 @@ const MatchUp = () => {
         console.log('RemovePlayer:', player);
         if (status && statusOfPLayers[status] && statusOfPLayers[status].players) {
             setStatusOfPLayers((prevStatus) => {
-                const updatedPlayers = prevStatus[status].players.filter((p) => p.username !== player.username);
-                return { ...prevStatus, [status]: { ...prevStatus[status], players: updatedPlayers } };
-            })
+                const updatedPlayers = prevStatus[status].players.filter(
+                    (p) => p.username !== player.username
+                );
+                return {
+                    ...prevStatus,
+                    [status]: { ...prevStatus[status], players: updatedPlayers },
+                };
+            });
         }
     };
 
@@ -79,17 +84,18 @@ const MatchUp = () => {
             // Remove player from their old team and position
             Object.keys(newTeams).forEach((team) => {
                 if (newTeams[team].goalie === player.username && team !== newTeam) {
-                    newTeams[team].goalie = ''
-                }
-                else {
-                    newTeams[team].players = newTeams[team].players.filter((p) => p.username !== player.username);
+                    newTeams[team].goalie = '';
+                } else {
+                    newTeams[team].players = newTeams[team].players.filter(
+                        (p) => p.username !== player.username
+                    );
                 }
             });
 
             // If position is 'goalie', assign player as goalie, else add player to the team
             const newTeamData = { ...newTeams[newTeam] };
             if (position === 'goalie') {
-                newTeamData.goalie = player.username
+                newTeamData.goalie = player.username;
             } else {
                 newTeamData.players = [...newTeamData.players, player];
             }
@@ -99,14 +105,20 @@ const MatchUp = () => {
         });
     };
 
-    console.log(teams)
-
-  
+    console.log(teams);
 
     return (
         <>
             <h1 style={{ textAlign: 'center' }}>FNL Roll Call</h1>
             <h1 style={{ textAlign: 'center' }}>Players Status</h1>
+
+            <h2 style={{ textAlign: 'center' }}>
+                {new Date(statusOfPLayers.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                })}
+            </h2>
             <div style={{ backgroundColor: '#f2f2f2' }}>
                 <div
                     style={{
@@ -128,15 +140,16 @@ const MatchUp = () => {
                                     width: '250px',
                                     backgroundColor: '#fff',
                                     boxShadow: '0px 0px 10px rgba(0,0,0,0.1)',
+                                    border: '2px solid #003da5', // Add a border color similar to hockey rink blue
                                 }}
                                 key={key}
                             >
-                                <h1 style={{ color: '#4a4a4a' }}>{key}</h1>
+                                <h1 style={{ color: '#003da5' }}>{key}</h1> {/* Change the color to hockey rink blue */}
                                 {statusOfPLayers[key].players.map((singlePlayer, playerIndex) => (
                                     <div key={playerIndex}>
                                         <p
                                             onDragStart={(e) => {
-                                                handleDragStart(e, singlePlayer, key)
+                                                handleDragStart(e, singlePlayer, key);
                                             }}
                                             draggable
                                             style={{
@@ -145,6 +158,7 @@ const MatchUp = () => {
                                                 padding: '10px',
                                                 margin: '10px 0',
                                                 cursor: 'grab',
+                                                fontWeight: 'bold', // Make the player names bold
                                             }}
                                         >
                                             {playerIndex + 1}. {singlePlayer.name}
@@ -155,14 +169,12 @@ const MatchUp = () => {
                         ))}
                 </div>
                 <h3 style={{ textAlign: 'center', marginTop: '30px' }}>Make Teams</h3>
-
                 <div
                     style={{
                         display: 'flex',
-                        justifyContent: 'center',
-                        gap:'120px',
+                        justifyContent: 'space-evenly',
                         backgroundImage:
-                            'url("https://media.istockphoto.com/id/1354857034/photo/empty-stands-of-the-ice-arena-and-clean-ice-cut-by-skates.jpg?s=612x612&w=0&k=20&c=V0ua8ZV_MSZyWO7hmyNV-KLAcgiawYSz2bqbtikpPYU=")', // replace with your image URL
+                            'url("https://media.istockphoto.com/id/1354857034/photo/empty-stands-of-the-ice-arena-and-clean-ice-cut-by-skates.jpg?s=612x612&w=0&k=20&c=V0ua8ZV_MSZyWO7hmyNV-KLAcgiawYSz2bqbtikpPYU=")',
                         backgroundRepeat: 'no-repeat',
                         backgroundSize: 'cover',
                         zIndex: '0',
@@ -170,16 +182,18 @@ const MatchUp = () => {
                         height: '800px',
                     }}
                 >
-                    {teamNameKeys.map((teamName) => (
+                    {teamNameKeys.map((teamName, index) => (
                         <div
                             key={teamName}
                             style={{
                                 marginTop: '120px',
-                                padding: '20px',
+                                padding: '80px',
                                 zIndex: '1',
-                                color: 'white',
+                                color: index % 2 === 0 ? 'white' : 'black',
+                                backgroundColor: index % 2 === 0 ? 'black' : 'white',
                                 fontFamily: 'Arial Black, Gadget, sans-serif',
                                 textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+                                borderRadius: '10px',
                             }}
                             onDrop={(e) => {
                                 e.preventDefault();
@@ -190,21 +204,21 @@ const MatchUp = () => {
                                 e.preventDefault();
                             }}
                         >
-                            <h2>Team: {teams[teamName].Team}</h2>
+                            <h2>🏒 Team: {teams[teamName].Team}</h2>
                             <p
                                 draggable
                                 onDragStart={(e) => {
                                     handleDragStart(e, teams[teamName].goalie);
                                 }}
-                                data-position="goalie" 
+                                data-position='goalie'
                             >
-                                Goalie: {teams[teamName].goalie}
+                                🥅 Goalie: {teams[teamName].goalie}
                             </p>
-                            <p> Players:</p>
+                            <p> 🏒 Players:</p>
                             <ol>
                                 {teams[teamName].players.map((player) => (
                                     <li
-                                        data-position="players"
+                                        data-position='players'
                                         key={player.name}
                                         draggable
                                         onDragStart={(e) => {
