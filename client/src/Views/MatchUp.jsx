@@ -17,6 +17,7 @@ const MatchUp = () => {
     });
 
     const { id } = useParams();
+
     useEffect(() => {
         // Use the ID to fetch the data
         fetch(`/playerStatus/status/${id}`)
@@ -30,6 +31,8 @@ const MatchUp = () => {
             });
     }, [id]);
 
+    const teamNameKeys = Object.keys(teams);
+
     const validKeys = ['monthToMonth', 'weekToWeek', 'IR', 'fiftyFifty'];
 
     const getKey = (key, validKeys) => {
@@ -38,70 +41,80 @@ const MatchUp = () => {
         }
     };
 
-    const handleDragStart = (e, player) => {
+    const handleDragStart = (e, player, status) => {
         e.dataTransfer.setData('player', JSON.stringify(player));
+        e.dataTransfer.setData('status', status);
     };
 
-    const handleDrop = (e, teamName) => {
-        e.preventDefault();
-        const player = JSON.parse(e.dataTransfer.getData('player'));
-        // Update the team based on the teamName from the event
-        if (player) {
-            if (!teams[teamName].players.some((p) => p.username === player.username)) {
-                setTeams((prevTeams) => {
-                    const newTeams = { ...prevTeams };
-                    const newTeam = { ...newTeams[teamName] };
-                    if (newTeam.goalie === player.username) {
-                        // Player is already a goalie, do nothing
-                        return prevTeams;
-                    } else if (newTeam.players.some((p) => p.username === player.username)) {
-                        // Player is already in the team, do nothing
-                        return prevTeams;
-                    } else if (newTeam.goalie === '') {
-                        // If goalie position is empty, assign player as goalie
-                        newTeam.goalie = player.username;
-                    } else {
-                        // Add player to the team
-                        newTeam.players.push(player);
-                    }
-
-                    newTeams[teamName] = newTeam;
-                    return newTeams;
-                });
-            } else {
-                setTeams((prevTeams) => {
-                    const newTeams = { ...prevTeams };
-                    const newTeam = { ...newTeams[teamName] };
-                    if (newTeam.goalie === player.username) {
-                        // Player is already a goalie, remove them
-                        newTeam.goalie = '';
-                    } else if (newTeam.players.some((p) => p.username === player.username)) {
-                        // Player is already in the team, remove them
-                        newTeam.players = newTeam.players.filter(
-                            (p) => p.username !== player.username
-                        );
-                    }
-                    newTeams[teamName] = newTeam;
-                    return newTeams;
-                });
-            }
+    const removePlayer = (player, status) => {
+        console.log('RemovePlayer:', player);
+        if (status && statusOfPLayers[status] && statusOfPLayers[status].players) {
+            setStatusOfPLayers((prevStatus) => {
+                const updatedPlayers = prevStatus[status].players.filter((p) => p.username !== player.username);
+                return { ...prevStatus, [status]: { ...prevStatus[status], players: updatedPlayers } };
+            })
         }
     };
 
-    console.log(teams);
-    const teamNameKeys = Object.keys(teams);
+    const handleDrop = (e, newTeam, position) => {
+        e.preventDefault();
+        const playerData = e.dataTransfer.getData('player');
+        const statusType = e.dataTransfer.getData('status');
+
+        if (!playerData || !statusType) {
+            console.log('Drop: playerData or oldTeam is not longer there');
+            return;
+        }
+
+        const player = JSON.parse(playerData);
+
+        console.log('Drop:', player);
+        // Filter out the dragged player and update the 'players' array of the oldTeam in the statusOfPLayers object
+        removePlayer(player, statusType);
+
+        if (!player) return;
+        setTeams((prevTeams) => {
+            const newTeams = { ...prevTeams };
+
+            // Remove player from their old team and position
+            Object.keys(newTeams).forEach((team) => {
+                if (newTeams[team].goalie === player.username && team !== newTeam) {
+                    newTeams[team].goalie = ''
+                }
+                else {
+                    newTeams[team].players = newTeams[team].players.filter((p) => p.username !== player.username);
+                }
+            });
+
+            // If position is 'goalie', assign player as goalie, else add player to the team
+            const newTeamData = { ...newTeams[newTeam] };
+            if (position === 'goalie') {
+                newTeamData.goalie = player.username
+            } else {
+                newTeamData.players = [...newTeamData.players, player];
+            }
+
+            newTeams[newTeam] = newTeamData;
+            return newTeams;
+        });
+    };
+
+    console.log(teams)
+
+  
+
     return (
         <>
             <h1 style={{ textAlign: 'center' }}>FNL Roll Call</h1>
-            <h1 style={{ textAlign: 'center'  }}>Players Status</h1>
-            <div style={{ backgroundColor: '#f2f2f2'}}>
+            <h1 style={{ textAlign: 'center' }}>Players Status</h1>
+            <div style={{ backgroundColor: '#f2f2f2' }}>
                 <div
                     style={{
                         display: 'flex',
                         flexDirection: 'row',
                         gap: '50px',
                         justifyContent: 'center',
-                        flexWrap: 'wrap'
+                        flexWrap: 'wrap',
                     }}
                 >
                     {Object.keys(statusOfPLayers)
@@ -114,7 +127,7 @@ const MatchUp = () => {
                                     padding: '20px',
                                     width: '250px',
                                     backgroundColor: '#fff',
-                                    boxShadow: '0px 0px 10px rgba(0,0,0,0.1)'
+                                    boxShadow: '0px 0px 10px rgba(0,0,0,0.1)',
                                 }}
                                 key={key}
                             >
@@ -122,14 +135,16 @@ const MatchUp = () => {
                                 {statusOfPLayers[key].players.map((singlePlayer, playerIndex) => (
                                     <div key={playerIndex}>
                                         <p
-                                            onDragStart={(e) => handleDragStart(e, singlePlayer)}
+                                            onDragStart={(e) => {
+                                                handleDragStart(e, singlePlayer, key)
+                                            }}
                                             draggable
                                             style={{
                                                 backgroundColor: '#f2f2f2',
                                                 borderRadius: '5px',
                                                 padding: '10px',
                                                 margin: '10px 0',
-                                                cursor: 'grab'
+                                                cursor: 'grab',
                                             }}
                                         >
                                             {playerIndex + 1}. {singlePlayer.name}
@@ -145,11 +160,12 @@ const MatchUp = () => {
                     style={{
                         display: 'flex',
                         justifyContent: 'center',
+                        gap:'120px',
                         backgroundImage:
                             'url("https://media.istockphoto.com/id/1354857034/photo/empty-stands-of-the-ice-arena-and-clean-ice-cut-by-skates.jpg?s=612x612&w=0&k=20&c=V0ua8ZV_MSZyWO7hmyNV-KLAcgiawYSz2bqbtikpPYU=")', // replace with your image URL
                         backgroundRepeat: 'no-repeat',
                         backgroundSize: 'cover',
-                        zIndex: '0',    
+                        zIndex: '0',
                         width: '100%',
                         height: '800px',
                     }}
@@ -162,27 +178,37 @@ const MatchUp = () => {
                                 padding: '20px',
                                 zIndex: '1',
                                 color: 'white',
-                                fontFamily: 'Arial Black, Gadget, sans-serif' ,
-                                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' 
+                                fontFamily: 'Arial Black, Gadget, sans-serif',
+                                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
                             }}
-                            onDrop={(e) => handleDrop(e, teamName)}
+                            onDrop={(e) => {
+                                e.preventDefault();
+                                const position = e.target.getAttribute('data-position');
+                                handleDrop(e, teamName, position);
+                            }}
                             onDragOver={(e) => {
                                 e.preventDefault();
                             }}
                         >
                             <h2>Team: {teams[teamName].Team}</h2>
-                            <p>Goalie: {teams[teamName].goalie}</p>
+                            <p
+                                draggable
+                                onDragStart={(e) => {
+                                    handleDragStart(e, teams[teamName].goalie);
+                                }}
+                                data-position="goalie" 
+                            >
+                                Goalie: {teams[teamName].goalie}
+                            </p>
                             <p> Players:</p>
                             <ol>
                                 {teams[teamName].players.map((player) => (
                                     <li
+                                        data-position="players"
                                         key={player.name}
-                                        draggable='true'
+                                        draggable
                                         onDragStart={(e) => {
-                                            e.dataTransfer.setData(
-                                                'player',
-                                                JSON.stringify(player)
-                                            );
+                                            handleDragStart(e, player);
                                         }}
                                     >
                                         {player.name}
