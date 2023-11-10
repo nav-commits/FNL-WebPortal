@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const gameSchema = new mongoose.Schema({
-    game: {
+   
         teamWhite: {
             Team: String,
             players: [{}],
@@ -15,7 +15,7 @@ const gameSchema = new mongoose.Schema({
             type: Date,
             default: Date.now, // Set the default value to the current date and time
         },
-    },
+    
 });
 
 

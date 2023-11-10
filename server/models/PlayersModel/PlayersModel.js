@@ -5,6 +5,7 @@ const playerSchema = new mongoose.Schema({
     name: String,
     team: [String],
     age: Number,
+    username: String,
     shootHand: String,
     img: String,
 });
