@@ -104,6 +104,24 @@ const MatchUp = () => {
         });
     };
 
+    const onSubmit = (e) => {
+        e.preventDefault();
+        fetch('/games/Game', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(teams),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    };
+
     console.log(teams);
 
     return (
@@ -170,7 +188,7 @@ const MatchUp = () => {
                 </div>
                 <h3 style={{ textAlign: 'center', marginTop: '30px' }}>Make Teams</h3>
 
-                <form >
+                <form onSubmit={onSubmit}>
                     <div
                         style={{
                             display: 'flex',
