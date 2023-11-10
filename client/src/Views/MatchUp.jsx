@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import Button from '../Atoms/Button/Button';
 
 const MatchUp = () => {
     const [statusOfPLayers, setStatusOfPLayers] = useState({});
@@ -47,7 +48,6 @@ const MatchUp = () => {
     };
 
     const removePlayer = (player, status) => {
-        console.log('RemovePlayer:', player);
         if (status && statusOfPLayers[status] && statusOfPLayers[status].players) {
             setStatusOfPLayers((prevStatus) => {
                 const updatedPlayers = prevStatus[status].players.filter(
@@ -73,7 +73,6 @@ const MatchUp = () => {
 
         const player = JSON.parse(playerData);
 
-        console.log('Drop:', player);
         // Filter out the dragged player and update the 'players' array of the oldTeam in the statusOfPLayers object
         removePlayer(player, statusType);
 
@@ -144,7 +143,8 @@ const MatchUp = () => {
                                 }}
                                 key={key}
                             >
-                                <h1 style={{ color: '#003da5' }}>{key}</h1> {/* Change the color to hockey rink blue */}
+                                <h1 style={{ color: '#003da5' }}>{key}</h1>{' '}
+                                {/* Change the color to hockey rink blue */}
                                 {statusOfPLayers[key].players.map((singlePlayer, playerIndex) => (
                                     <div key={playerIndex}>
                                         <p
@@ -169,69 +169,79 @@ const MatchUp = () => {
                         ))}
                 </div>
                 <h3 style={{ textAlign: 'center', marginTop: '30px' }}>Make Teams</h3>
-                <div
-                    style={{
-                        display: 'flex',
-                        justifyContent: 'space-evenly',
-                        backgroundImage:
-                            'url("https://media.istockphoto.com/id/1354857034/photo/empty-stands-of-the-ice-arena-and-clean-ice-cut-by-skates.jpg?s=612x612&w=0&k=20&c=V0ua8ZV_MSZyWO7hmyNV-KLAcgiawYSz2bqbtikpPYU=")',
-                        backgroundRepeat: 'no-repeat',
-                        backgroundSize: 'cover',
-                        zIndex: '0',
-                        width: '100%',
-                        height: '800px',
-                    }}
-                >
-                    {teamNameKeys.map((teamName, index) => (
-                        <div
-                            key={teamName}
-                            style={{
-                                marginTop: '120px',
-                                padding: '80px',
-                                zIndex: '1',
-                                color: index % 2 === 0 ? 'white' : 'black',
-                                backgroundColor: index % 2 === 0 ? 'black' : 'white',
-                                fontFamily: 'Arial Black, Gadget, sans-serif',
-                                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
-                                borderRadius: '10px',
-                            }}
-                            onDrop={(e) => {
-                                e.preventDefault();
-                                const position = e.target.getAttribute('data-position');
-                                handleDrop(e, teamName, position);
-                            }}
-                            onDragOver={(e) => {
-                                e.preventDefault();
-                            }}
-                        >
-                            <h2>🏒 Team: {teams[teamName].Team}</h2>
-                            <p
-                                draggable
-                                onDragStart={(e) => {
-                                    handleDragStart(e, teams[teamName].goalie);
+
+                <form >
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'space-evenly',
+                            backgroundImage:
+                                'url("https://media.istockphoto.com/id/1354857034/photo/empty-stands-of-the-ice-arena-and-clean-ice-cut-by-skates.jpg?s=612x612&w=0&k=20&c=V0ua8ZV_MSZyWO7hmyNV-KLAcgiawYSz2bqbtikpPYU=")',
+                            backgroundRepeat: 'no-repeat',
+                            backgroundSize: 'cover',
+                            zIndex: '0',
+                            width: '100%',
+                            height: '800px',
+                        }}
+                    >
+                        {teamNameKeys.map((teamName, index) => (
+                            <div
+                                key={teamName}
+                                style={{
+                                    marginTop: '120px',
+                                    padding: '80px',
+                                    zIndex: '1',
+                                    color: index % 2 === 0 ? 'white' : 'black',
+                                    backgroundColor: index % 2 === 0 ? 'black' : 'white',
+                                    fontFamily: 'Arial Black, Gadget, sans-serif',
+                                    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+                                    borderRadius: '10px',
                                 }}
-                                data-position='goalie'
+                                onDrop={(e) => {
+                                    e.preventDefault();
+                                    const position = e.target.getAttribute('data-position');
+                                    handleDrop(e, teamName, position);
+                                }}
+                                onDragOver={(e) => {
+                                    e.preventDefault();
+                                }}
                             >
-                                🥅 Goalie: {teams[teamName].goalie}
-                            </p>
-                            <p> 🏒 Players:</p>
-                            <ol>
-                                {teams[teamName].players.map((player) => (
-                                    <li
-                                        data-position='players'
-                                        key={player.name}
-                                        draggable
-                                        onDragStart={(e) => {
-                                            handleDragStart(e, player);
-                                        }}
-                                    >
-                                        {player.name}
-                                    </li>
-                                ))}
-                            </ol>
-                        </div>
-                    ))}
-                </div>
+                                <h2>🏒 Team: {teams[teamName].Team}</h2>
+                                <p
+                                    draggable
+                                    onDragStart={(e) => {
+                                        handleDragStart(e, teams[teamName].goalie);
+                                    }}
+                                    data-position='goalie'
+                                >
+                                    🥅 Goalie: {teams[teamName].goalie}
+                                </p>
+                                <p> 🏒 Players:</p>
+                                <ol>
+                                    {teams[teamName].players.map((player) => (
+                                        <li
+                                            data-position='players'
+                                            key={player.name}
+                                            draggable
+                                            onDragStart={(e) => {
+                                                handleDragStart(e, player);
+                                            }}
+                                        >
+                                            {player.name}
+                                        </li>
+                                    ))}
+                                </ol>
+                            </div>
+                        ))}
+                    </div>
+                    <Button
+                        title='Submit'
+                        color='#0074D9'
+                        width={'150px'}
+                        type='submit'
+                        marginTop={'20px'}
+                    />
+                </form>
             </div>
         </>
     );

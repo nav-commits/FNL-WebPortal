@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { fnlPlayers } from '../Utils';
 import { useNavigate } from 'react-router-dom';
 import Button from '../Atoms/Button/Button';
@@ -84,7 +84,17 @@ function PlayerStatus() {
     };
 
     const renderPlayer = (player) => (
-        <div key={player.id} onDragStart={(e) => handleDragStart(e, player)} draggable>
+        <div
+            key={player.id}
+            onDragStart={(e) => handleDragStart(e, player)}
+            draggable
+            style={{
+                backgroundColor: '#f2f2f2',
+                padding: '10px',
+                margin: '10px',
+                borderRadius: '5px',
+            }}
+        >
             {player.name}
         </div>
     );
@@ -96,15 +106,17 @@ function PlayerStatus() {
             onDrop={(e) => handleDrop(e, category)}
             className='category'
             style={{
-                border: '1px solid #000',
-                borderRadius: '10px',
+                border: '2px solid #000',
+                borderRadius: '15px',
                 backgroundColor: '#f9f9f9',
                 margin: '10px',
                 padding: '20px',
                 width: '250px',
             }}
         >
-            <h3 style={{ color: '#333', textAlign: 'left' }}>{category.name}</h3>
+            <h3 style={{ color: '#333', textAlign: 'left', fontSize: '20px', fontWeight: 'bold' }}>
+                {category.name}
+            </h3>
             <ol>
                 {category.players.map((player) => (
                     <li>{renderPlayer(player)}</li>
@@ -114,14 +126,30 @@ function PlayerStatus() {
     );
 
     return (
-        <div style={{ margin: '50px' }}>
+        <div
+            style={{
+                margin: '50px',
+                backgroundColor: '#e6e6e6',
+                borderRadius: '15px',
+                padding: '20px',
+            }}
+        >
             <div className='players'>
-                <h2>Players</h2>
+                <h2 style={{ fontSize: '25px', fontWeight: 'bold', color: '#0074D9' }}>Players</h2>
                 {players.map((player) => renderPlayer(player))}
             </div>
             <form onSubmit={handleSubmit}>
                 <div style={{ margin: '30px' }}>
-                    <h2 style={{ textAlign: 'center' }}>Categories</h2>
+                    <h2
+                        style={{
+                            textAlign: 'center',
+                            fontSize: '25px',
+                            fontWeight: 'bold',
+                            color: '#0074D9',
+                        }}
+                    >
+                        Categories
+                    </h2>
                     <div
                         style={{
                             margin: '30px',
@@ -134,16 +162,31 @@ function PlayerStatus() {
                     </div>
                 </div>
 
-                <Button title='Submit' color='#0074D9' width={'205px'} type='submit' />
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        width: '420px',
+                        margin: '0 auto',
+                    }}
+                >
+                    <Button
+                        title='Submit'
+                        color='#0074D9'
+                        width={'150px'}
+                        type='submit'
+                        marginTop={'20px'}
+                    />
+                    <Button
+                        marginTop={'20px'}
+                        title='Matchup'
+                        color='#0074D9'
+                        width={'205px'}
+                        type={'button'}
+                        onClick={matchHandler}
+                    />
+                </div>
             </form>
-            <Button
-                marginTop={'20px'}
-                title='Matchup'
-                color='#0074D9'
-                width={'205px'}
-                type={'button'}
-                onClick={matchHandler}
-            />
         </div>
     );
 }
