@@ -49,8 +49,11 @@ function AddPlayer() {
 
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
-        const url = URL.createObjectURL(file);
-        setAddPlayer({ ...addPlayer, img: url });
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setAddPlayer({ ...addPlayer, img: reader.result });
+        };
+        reader.readAsDataURL(file);
     };
 
     return (

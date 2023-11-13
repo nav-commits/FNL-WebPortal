@@ -1,12 +1,13 @@
 import React from 'react';
 import './Button.css';
 
-function Button({ title, onClick, type, color, marginTop, width }) {
+function Button({ title, onClick, type, color, marginTop, width, disabled }) {
     return (
         <button
+            disabled={disabled}
             onClick={onClick}
-            style={{
-                backgroundColor: color,
+            style={{ 
+                backgroundColor: disabled? 'grey' : color,
                 margin: marginTop,
                 width: width
             }}

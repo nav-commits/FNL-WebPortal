@@ -94,7 +94,7 @@ const MatchUp = () => {
             // If position is 'goalie', assign player as goalie, else add player to the team
             const newTeamData = { ...newTeams[newTeam] };
             if (position === 'goalie') {
-                newTeamData.goalie = player.username;
+                newTeamData.goalie = player.name
             } else {
                 newTeamData.players = [...newTeamData.players, player];
             }
@@ -157,7 +157,7 @@ const MatchUp = () => {
                                     width: '250px',
                                     backgroundColor: '#fff',
                                     boxShadow: '0px 0px 10px rgba(0,0,0,0.1)',
-                                    border: '2px solid #003da5', // Add a border color similar to hockey rink blue
+                                    border: '2px solid #003da5', 
                                 }}
                                 key={key}
                             >
