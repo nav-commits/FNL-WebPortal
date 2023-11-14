@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { fnlPlayers } from '../Utils';
 import { useNavigate } from 'react-router-dom';
 import Button from '../Atoms/Button/Button';
+import mainContext from '../Context';
 
 function PlayerStatus() {
-    const [players, setPlayers] = useState(fnlPlayers);
-    const [newResourceId, setNewResourceId] = useState(null);
+    
+    const { players, setPlayers } = useContext(mainContext);
+    const [disabled, setDisabled] = useState(true);
 
     const [categories, setCategories] = useState([
         { id: 'monthToMonth', name: 'monthToMonth', players: [] },
@@ -50,7 +52,12 @@ function PlayerStatus() {
 
         setPlayers(updatedPlayers);
         setCategories(updatedCategories);
+        // Save to local storage
+        localStorage.setItem('players', JSON.stringify(updatedPlayers));
+        localStorage.setItem('categories', JSON.stringify(updatedCategories));
+      
     };
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         console.log('submitting');
@@ -71,16 +78,11 @@ function PlayerStatus() {
             .then((res) => res.json())
             .then((data) => {
                 console.log('Success:', data);
-                setNewResourceId(data._id);
+                navigate(`/Matchup/${data._id}`)
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
-    };
-
-    const navigate = useNavigate();
-    const matchHandler = () => {
-        navigate(`/Matchup/${newResourceId}`);
     };
 
     const renderPlayer = (player) => (
@@ -125,6 +127,35 @@ function PlayerStatus() {
         </div>
     );
 
+    const saveCategories = () => {
+        localStorage.setItem('categories', JSON.stringify(categories));
+        console.log('saved', categories);
+        setDisabled(false)
+    }
+
+    useEffect(() => {
+        const savedCategories = JSON.parse(localStorage.getItem('categories'));
+        if (savedCategories) {
+            setCategories(savedCategories);
+        }
+
+        const savedPlayers = JSON.parse(localStorage.getItem('players'));
+        if (savedPlayers) {
+            setPlayers(savedPlayers);
+        } else {
+            // Fetch players from the API only if they are not in the local storage
+            fetch('players/players')
+                .then((response) => response.json())
+                .then((data) => {
+                    setPlayers(data);
+                    // Save fetched players to local storage for future use
+                    localStorage.setItem('players', JSON.stringify(data));
+                });
+        }
+    }, []);
+    console.log(players)
+    console.log(categories)
+
     return (
         <div
             style={{
@@ -136,7 +167,7 @@ function PlayerStatus() {
         >
             <div className='players'>
                 <h2 style={{ fontSize: '25px', fontWeight: 'bold', color: '#0074D9' }}>Players</h2>
-                {players.map((player) => renderPlayer(player))}
+                { players.length > 0 && players.map((player) => renderPlayer(player))}
             </div>
             <form onSubmit={handleSubmit}>
                 <div style={{ margin: '30px' }}>
@@ -148,7 +179,7 @@ function PlayerStatus() {
                             color: '#0074D9',
                         }}
                     >
-                        Categories
+                        Player Status
                     </h2>
                     <div
                         style={{
@@ -171,20 +202,22 @@ function PlayerStatus() {
                     }}
                 >
                     <Button
+                        marginTop={'20px'}
+                        title='Save'
+                        color='#0074D9'
+                        width={'205px'}
+                        type={'button'}
+                        onClick={saveCategories}
+                    />
+                    <Button
                         title='Submit'
                         color='#0074D9'
                         width={'150px'}
                         type='submit'
                         marginTop={'20px'}
+                        disabled={disabled}
                     />
-                    <Button
-                        marginTop={'20px'}
-                        title='Matchup'
-                        color='#0074D9'
-                        width={'205px'}
-                        type={'button'}
-                        onClick={matchHandler}
-                    />
+                   
                 </div>
             </form>
         </div>

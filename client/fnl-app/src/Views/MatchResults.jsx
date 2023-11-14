@@ -7,6 +7,7 @@ const MatchResults = () => {
     const { matchupResults, setMatchResults } = useContext(mainContext);
     const [open, setOpen] = React.useState(false);
     const [filterWeek, setFilterWeek] = React.useState([]);
+    const [weekNumber, setWeekNumber] = React.useState(0); // New state variable for week number
 
     useEffect(() => {
         const fetchData = async () => {
@@ -17,6 +18,7 @@ const MatchResults = () => {
                 }
                 const responseData = await response.json();
                 setMatchResults(responseData);
+                setWeekNumber(prevWeekNumber => prevWeekNumber ? prevWeekNumber + 1: 1); // Increment week number
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -24,23 +26,30 @@ const MatchResults = () => {
         fetchData();
     }, []);
 
-    const filterByWeek = (weekNumber) => {
-        if (weekNumber >= 0 && weekNumber < matchupResults.length) {
-            setFilterWeek([matchupResults[weekNumber]]);
+    const filterByWeek = (index) => {
+        if (index >= 0 && index < matchupResults.length) {
+            setFilterWeek([matchupResults[index]]);
+            setWeekNumber(index + 1); // Update the weekNumber state
         } else {
             setFilterWeek([]);
         }
     };
 
+    console.log(filterWeek)
+
     const onClick = () => {
         setOpen(!open);
     };
 
-    React.useEffect(() => {
-        if (filterWeek.length === 0) {
-            filterByWeek(weeks[0]);
-        }
-    }, [matchupResults]);
+    const weeks = matchupResults.map((result, index) => index + 1); // Define weeks here
+
+   React.useEffect(() => {
+    if (filterWeek.length === 0 && matchupResults.length > 0) {
+        filterByWeek(matchupResults.length - 1); // Filter by the last week
+    }
+}, [matchupResults, filterWeek]);
+
+    console.log(weekNumber)
 
     let date = new Date(matchupResults[0]?.createdAt);
     let monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -69,7 +78,7 @@ const MatchResults = () => {
                         <div key={index} style={{ padding: '2px' }}>
                             <p
                                 style={{ cursor: 'pointer', marginLeft: '50px' }}
-                                onClick={() => filterByWeek(week)}
+                                onClick={() => filterByWeek(index)}
                             >
                                 week{week}
                             </p>
@@ -93,7 +102,7 @@ const MatchResults = () => {
                                 width: '300px',
                             }}
                         >
-                            <h3 style={{ color: '#333' }}>Week {formData._id}</h3>
+                            <h3 style={{ color: '#333' }}>Week {weekNumber}</h3>
                             <p style={{ color: '#666' }}>Date: {formattedDate}</p>
                             {Object.keys(formData)
                                 .filter((team) => !['_id', 'createdAt', '__v', 'Goalie'].includes(team))
