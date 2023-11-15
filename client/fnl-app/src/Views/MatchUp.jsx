@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Button from '../Atoms/Button/Button';
+import Input from '../Atoms/Input/Input';
 
 const MatchUp = () => {
     const [statusOfPLayers, setStatusOfPLayers] = useState({});
@@ -15,6 +16,9 @@ const MatchUp = () => {
             players: [],
             goalie: '',
         },
+        seriesWinner: {
+            winner: ''
+        }
     });
 
     const { id } = useParams();
@@ -80,14 +84,17 @@ const MatchUp = () => {
         setTeams((prevTeams) => {
             const newTeams = { ...prevTeams };
 
+          
             // Remove player from their old team and position
             Object.keys(newTeams).forEach((team) => {
                 if (newTeams[team].goalie === player.username && team !== newTeam) {
                     newTeams[team].goalie = '';
                 } else {
-                    newTeams[team].players = newTeams[team].players.filter(
-                        (p) => p.username !== player.username
-                    );
+                    if (team !== 'seriesWinner' && newTeams[team].players) {
+                        newTeams[team].players = newTeams[team].players.filter(
+                            (p) => p.username !== player.username
+                        );
+                    }
                 }
             });
 
@@ -102,6 +109,16 @@ const MatchUp = () => {
             newTeams[newTeam] = newTeamData;
             return newTeams;
         });
+    };
+
+    const handleChange = (event) => {
+        const newValue = event.target.value;
+        setTeams(prevTeams => ({
+            ...prevTeams,
+            seriesWinner: {
+                winner: newValue
+            }
+        }));
     };
 
     const onSubmit = (e) => {
@@ -202,55 +219,57 @@ const MatchUp = () => {
                             height: '800px',
                         }}
                     >
-                        {teamNameKeys.map((teamName, index) => (
-                            <div
-                                key={teamName}
-                                style={{
-                                    marginTop: '120px',
-                                    padding: '80px',
-                                    zIndex: '1',
-                                    color: index % 2 === 0 ? 'white' : 'black',
-                                    backgroundColor: index % 2 === 0 ? 'black' : 'white',
-                                    fontFamily: 'Arial Black, Gadget, sans-serif',
-                                    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
-                                    borderRadius: '10px',
-                                }}
-                                onDrop={(e) => {
-                                    e.preventDefault();
-                                    const position = e.target.getAttribute('data-position');
-                                    handleDrop(e, teamName, position);
-                                }}
-                                onDragOver={(e) => {
-                                    e.preventDefault();
-                                }}
-                            >
-                                <h2>🏒 Team: {teams[teamName].Team}</h2>
-                                <p
-                                    draggable
-                                    onDragStart={(e) => {
-                                        handleDragStart(e, teams[teamName].goalie);
+                        {teamNameKeys.map((teamName, index) =>
+                            teamName !== 'seriesWinner' ? (
+                                <div
+                                    key={teamName}
+                                    style={{
+                                        marginTop: '120px',
+                                        padding: '80px',
+                                        zIndex: '1',
+                                        color: index % 2 === 0 ? 'white' : 'black',
+                                        backgroundColor: index % 2 === 0 ? 'black' : 'white',
+                                        fontFamily: 'Arial Black, Gadget, sans-serif',
+                                        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+                                        borderRadius: '10px',
                                     }}
-                                    data-position='goalie'
+                                    onDrop={(e) => {
+                                        e.preventDefault();
+                                        const position = e.target.getAttribute('data-position');
+                                        handleDrop(e, teamName, position);
+                                    }}
+                                    onDragOver={(e) => {
+                                        e.preventDefault();
+                                    }}
                                 >
-                                    🥅 Goalie: {teams[teamName].goalie}
-                                </p>
-                                <p> 🏒 Players:</p>
-                                <ol>
-                                    {teams[teamName].players.map((player) => (
-                                        <li
-                                            data-position='players'
-                                            key={player.name}
-                                            draggable
-                                            onDragStart={(e) => {
-                                                handleDragStart(e, player);
-                                            }}
-                                        >
-                                            {player.name}
-                                        </li>
-                                    ))}
-                                </ol>
-                            </div>
-                        ))}
+                                    <h2>🏒 Team: {teams[teamName].Team}</h2>
+                                    <p
+                                        draggable
+                                        onDragStart={(e) => {
+                                            handleDragStart(e, teams[teamName].goalie);
+                                        }}
+                                        data-position='goalie'
+                                    >
+                                        🥅 Goalie: {teams[teamName].goalie}
+                                    </p>
+                                    <p> 🏒 Players:</p>
+                                    <ol>
+                                        {teams[teamName].players && teams[teamName].players.map((player) => (
+                                            <li
+                                                data-position='players'
+                                                key={player.name}
+                                                draggable
+                                                onDragStart={(e) => {
+                                                    handleDragStart(e, player);
+                                                }}
+                                            >
+                                                {player.name}
+                                            </li>
+                                        ))}
+                                    </ol>
+                                </div>
+                            ) : null
+                        )}
                     </div>
                     <Button
                         title='Submit'
@@ -258,6 +277,12 @@ const MatchUp = () => {
                         width={'150px'}
                         type='submit'
                         marginTop={'20px'}
+                    />
+                    <Input
+                        name='seriesWinner'
+                        value={teams.seriesWinner.winner}
+                        onChange={handleChange}
+                        placeholder='seriesWinner'
                     />
                 </form>
             </div>
