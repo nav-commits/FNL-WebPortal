@@ -2,7 +2,6 @@ import React from 'react';
 import { useContext, useEffect } from 'react';
 import mainContext from '../Context';
 import Button from '../Atoms/Button/Button';
-import { weeks } from '../Utils';
 const MatchResults = () => {
     const { matchupResults, setMatchResults } = useContext(mainContext);
     const [open, setOpen] = React.useState(false);
@@ -54,8 +53,6 @@ const MatchResults = () => {
     let date = new Date(matchupResults[0]?.createdAt);
     let monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     let formattedDate = `${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
-    
-
 
     return (
         <div style={{ position: 'relative' }}>
@@ -104,8 +101,9 @@ const MatchResults = () => {
                         >
                             <h3 style={{ color: '#333' }}>Week {weekNumber}</h3>
                             <p style={{ color: '#666' }}>Date: {formattedDate}</p>
+                            {formData.seriesWinner.winner && <p>seriesWinner : <b>{formData.seriesWinner.winner}</b></p>}
                             {Object.keys(formData)
-                                .filter((team) => !['_id', 'createdAt', '__v', 'Goalie'].includes(team))
+                                .filter((team) => !['_id', 'createdAt', '__v', 'Goalie', 'seriesWinner'].includes(team))
                                 .map((team) => (
                                     <div key={team}>
                                         <h4 style={{ color: '#333' }}>{team}</h4>
