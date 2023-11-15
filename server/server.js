@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 dotenv.config();
 const app = express();
-const port = 5000;
+const port = 5001;
 const cors = require('cors');
 
 const uri = process.env.MONGODB_URI;
