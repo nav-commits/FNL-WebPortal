@@ -3,12 +3,10 @@ const gameSchema = new mongoose.Schema({
     teamWhite: {
         Team: String,
         players: [{}],
-        goalie: String,
     },
     teamBlack: {
         Team: String,
         players: [{}],
-        goalie: String,
     },
     createdAt: {
         type: Date,
