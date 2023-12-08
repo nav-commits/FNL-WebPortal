@@ -10,6 +10,7 @@ function AddPlayer() {
         username: '',
         shootHand: '',
         img: '',
+        position: ''
     });
 
     const handleSubmit = (event) => {
@@ -81,6 +82,13 @@ function AddPlayer() {
                         value={addPlayer.age}
                         onChange={handleChange}
                         placeholder='Age'
+                    />
+
+                    <Input
+                        name='position'
+                        value={addPlayer.position}
+                        onChange={handleChange}
+                        placeholder='position'
                     />
 
                     {addPlayer.team.map((team, index) => (

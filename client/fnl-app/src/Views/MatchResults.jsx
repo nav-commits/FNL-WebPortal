@@ -105,7 +105,6 @@ const MatchResults = () => {
                                 .map((team) => (
                                     <div key={team}>
                                         <h4 style={{ color: '#333' }}>{team}</h4>
-                                        <p style={{ color: '#666' }}>Goalie: {formData[team].goalie}</p>
                                         <ul style={{ listStyle: 'none' }}>
                                             {formData[team] && formData[team].players ? formData[team].players.map((player, index) => (
                                                 <li key={index} style={{ color: '#666' }}>
