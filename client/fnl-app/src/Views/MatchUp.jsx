@@ -255,7 +255,7 @@ const MatchUp = () => {
                             ) : null
                         )}
                     </div>
-                    <p>welcome</p>
+                    <p>welcome to game</p>
                     <Button
                         title='Submit'
                         color='#0074D9'
