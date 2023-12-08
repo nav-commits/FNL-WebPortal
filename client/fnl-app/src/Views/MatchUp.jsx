@@ -9,16 +9,14 @@ const MatchUp = () => {
         teamWhite: {
             Team: 'White',
             players: [],
-            goalie: '',
         },
         teamBlack: {
             Team: 'Black',
             players: [],
-            goalie: '',
         },
         seriesWinner: {
-            winner: ''
-        }
+            winner: '',
+        },
     });
 
     const { id } = useParams();
@@ -65,7 +63,7 @@ const MatchUp = () => {
         }
     };
 
-    const handleDrop = (e, newTeam, position) => {
+    const handleDrop = (e, newTeam) => {
         e.preventDefault();
         const playerData = e.dataTransfer.getData('player');
         const statusType = e.dataTransfer.getData('status');
@@ -84,28 +82,18 @@ const MatchUp = () => {
         setTeams((prevTeams) => {
             const newTeams = { ...prevTeams };
 
-          
             // Remove player from their old team and position
             Object.keys(newTeams).forEach((team) => {
-                if (newTeams[team].goalie === player.username && team !== newTeam) {
-                    newTeams[team].goalie = '';
-                } else {
-                    if (team !== 'seriesWinner' && newTeams[team].players) {
-                        newTeams[team].players = newTeams[team].players.filter(
-                            (p) => p.username !== player.username
-                        );
-                    }
+                if (team !== 'seriesWinner' && newTeams[team].players) {
+                    newTeams[team].players = newTeams[team].players.filter(
+                        (p) => p.username !== player.username
+                    );
                 }
             });
 
             // If position is 'goalie', assign player as goalie, else add player to the team
             const newTeamData = { ...newTeams[newTeam] };
-            if (position === 'goalie') {
-                newTeamData.goalie = player.name
-            } else {
-                newTeamData.players = [...newTeamData.players, player];
-            }
-
+            newTeamData.players = [...newTeamData.players, player];
             newTeams[newTeam] = newTeamData;
             return newTeams;
         });
@@ -113,11 +101,11 @@ const MatchUp = () => {
 
     const handleChange = (event) => {
         const newValue = event.target.value;
-        setTeams(prevTeams => ({
+        setTeams((prevTeams) => ({
             ...prevTeams,
             seriesWinner: {
-                winner: newValue
-            }
+                winner: newValue,
+            },
         }));
     };
 
@@ -174,7 +162,7 @@ const MatchUp = () => {
                                     width: '250px',
                                     backgroundColor: '#fff',
                                     boxShadow: '0px 0px 10px rgba(0,0,0,0.1)',
-                                    border: '2px solid #003da5', 
+                                    border: '2px solid #003da5',
                                 }}
                                 key={key}
                             >
@@ -243,34 +231,31 @@ const MatchUp = () => {
                                     }}
                                 >
                                     <h2>🏒 Team: {teams[teamName].Team}</h2>
-                                    <p
-                                        draggable
-                                        onDragStart={(e) => {
-                                            handleDragStart(e, teams[teamName].goalie);
-                                        }}
-                                        data-position='goalie'
-                                    >
-                                        🥅 Goalie: {teams[teamName].goalie}
-                                    </p>
                                     <p> 🏒 Players:</p>
                                     <ol>
-                                        {teams[teamName].players && teams[teamName].players.map((player) => (
-                                            <li
-                                                data-position='players'
-                                                key={player.name}
-                                                draggable
-                                                onDragStart={(e) => {
-                                                    handleDragStart(e, player);
-                                                }}
-                                            >
-                                                {player.name}
-                                            </li>
-                                        ))}
+                                        {teams[teamName].players &&
+                                            teams[teamName].players.map((player) => (
+                                                <li
+                                                    data-position='players'
+                                                    key={player.name}
+                                                    draggable
+                                                    onDragStart={(e) => {
+                                                        handleDragStart(e, player);
+                                                    }}
+                                                >
+                                                    {player.position === 'goalie' ? (
+                                                        <>goalie: {player.name}</>
+                                                    ) : (
+                                                        player.name
+                                                    )}
+                                                </li>
+                                            ))}
                                     </ol>
                                 </div>
                             ) : null
                         )}
                     </div>
+                    <p>welcome to game</p>
                     <Button
                         title='Submit'
                         color='#0074D9'
