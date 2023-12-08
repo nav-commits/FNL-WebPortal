@@ -278,6 +278,7 @@ const MatchUp = () => {
                         type='submit'
                         marginTop={'20px'}
                     />
+                    <p>Winner of Series</p>
                     <Input
                         name='seriesWinner'
                         value={teams.seriesWinner.winner}
