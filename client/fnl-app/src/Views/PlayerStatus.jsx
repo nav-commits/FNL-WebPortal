@@ -79,6 +79,9 @@ function PlayerStatus() {
             .then((data) => {
                 console.log('Success:', data);
                 navigate(`/Matchup/${data._id}`)
+                // Remove players and categories from local storage
+                localStorage.removeItem('players');
+                localStorage.removeItem('categories');
             })
             .catch((error) => {
                 console.error('Error:', error);

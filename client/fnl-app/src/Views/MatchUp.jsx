@@ -5,6 +5,7 @@ import Input from '../Atoms/Input/Input';
 
 const MatchUp = () => {
     const [statusOfPLayers, setStatusOfPLayers] = useState({});
+    const [disabled, setDisabled] = useState(true);
     const [teams, setTeams] = useState({
         teamWhite: {
             Team: 'White',
@@ -22,16 +23,22 @@ const MatchUp = () => {
     const { id } = useParams();
 
     useEffect(() => {
-        // Use the ID to fetch the data
-        fetch(`/playerStatus/status/${id}`)
-            .then((res) => res.json())
-            .then((data) => {
-                console.log('Success:', data);
-                setStatusOfPLayers(data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+        const savedStatusPlayers = JSON.parse(localStorage.getItem('statusOfPLayers'));
+        if (savedStatusPlayers) {
+            setStatusOfPLayers(savedStatusPlayers);
+        }
+        else {
+            // Use the ID to fetch the data
+            fetch(`/playerStatus/status/${id}`)
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log('Success:', data);
+                    setStatusOfPLayers(data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
     }, [id]);
 
     const teamNameKeys = Object.keys(teams);
@@ -55,10 +62,12 @@ const MatchUp = () => {
                 const updatedPlayers = prevStatus[status].players.filter(
                     (p) => p.username !== player.username
                 );
-                return {
+                const updatedStatus = {
                     ...prevStatus,
                     [status]: { ...prevStatus[status], players: updatedPlayers },
                 };
+                localStorage.setItem('statusOfPLayers', JSON.stringify(updatedStatus));
+                return updatedStatus;
             });
         }
     };
@@ -121,13 +130,26 @@ const MatchUp = () => {
             .then((res) => res.json())
             .then((data) => {
                 console.log('Success:', data);
+                localStorage.removeItem('teams');
+                localStorage.removeItem('statusOfPLayers');
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
     };
+    const saveTeams = () => {
+        localStorage.setItem('teams', JSON.stringify(teams));
+        console.log('saved', teams);
+        setDisabled(false)
+    }
+    
+    useEffect(() => {
+        const savedTeams = JSON.parse(localStorage.getItem('teams'));
+        if (savedTeams) {
+            setTeams(savedTeams);
+        }
+    }, []);
 
-    console.log(teams);
 
     return (
         <>
@@ -262,6 +284,7 @@ const MatchUp = () => {
                         width={'150px'}
                         type='submit'
                         marginTop={'20px'}
+                        disabled={disabled}
                     />
                     <p>Winner of Series</p>
                     <Input
@@ -271,6 +294,14 @@ const MatchUp = () => {
                         placeholder='seriesWinner'
                     />
                 </form>
+                <Button
+                    marginTop={'20px'}
+                    title='Save'
+                    color='#0074D9'
+                    width={'205px'}
+                    type={'button'}
+                    onClick={saveTeams}
+                />
             </div>
         </>
     );
