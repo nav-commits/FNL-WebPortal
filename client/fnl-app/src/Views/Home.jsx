@@ -25,13 +25,13 @@ function Home() {
                 }}
             >
                 <Button
-                    title='Explore Games'
+                    title='Check Player Status'
                     color='#2196f3'
                     width={'200px'}
-                    onClick={() => onClick('Matchup')}
+                    onClick={() => onClick('PlayerStatus')}
                 />
                 <Button
-                    title='Learn About Teams'
+                    title='Learn About Players'
                     color='#2196f3'
                     width={'200px'}
                     onClick={() => onClick('Players')}
