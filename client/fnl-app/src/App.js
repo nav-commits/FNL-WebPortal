@@ -26,7 +26,7 @@ function App() {
                     }
                 />
                 <Route
-                    path='/Matchup/:id'
+                    path='/Matchup/:id?'
                     element={
                         <ProtectedRoute>
                             <MatchUp />

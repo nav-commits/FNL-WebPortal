@@ -152,6 +152,17 @@ const MatchUp = () => {
         }
     }, []);
 
+    useEffect(() => {
+        window.onbeforeunload = () => {
+            localStorage.removeItem('teams');
+            localStorage.removeItem('statusOfPLayers');
+        };
+
+        return () => {
+            window.onbeforeunload = null;
+        };
+    }, []);
+
     return (
         <>
             <h1 style={{ textAlign: 'center' }}>FNL Roll Call</h1>

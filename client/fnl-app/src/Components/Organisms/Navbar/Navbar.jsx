@@ -1,7 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useContext } from 'react';
+import mainContext from '../../../Context';
 
 function Navbar() {
+    const { getID } = useContext(mainContext);
     return (
         <nav
             style={{
@@ -37,13 +40,24 @@ function Navbar() {
                 >
                     Home
                 </Link>
-
                 <Link
                     to='/PlayerStatus'
                     style={{ textDecoration: 'none', color: 'white', fontSize: '1.2rem' }}
                 >
                     PlayerStatus
                 </Link>
+
+                <Link
+                    to={`/Matchup/${getID}`}
+                    style={{
+                        textDecoration: 'none',
+                        color: 'white',
+                        fontSize: '1.2rem',
+                    }}
+                >
+                    Matchup
+                </Link>
+
                 <Link
                     to='/MatchResults'
                     style={{ textDecoration: 'none', color: 'white', fontSize: '1.2rem' }}

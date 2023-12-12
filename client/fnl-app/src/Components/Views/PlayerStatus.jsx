@@ -5,7 +5,7 @@ import mainContext from '../../Context';
 
 function PlayerStatus() {
 
-    const { players, setPlayers } = useContext(mainContext);
+    const { players, setPlayers, setGetID } = useContext(mainContext);
     const [disabled, setDisabled] = useState(true);
 
     const [categories, setCategories] = useState([
@@ -78,6 +78,7 @@ function PlayerStatus() {
             .then((data) => {
                 console.log('Success:', data);
                 navigate(`/Matchup/${data._id}`)
+                setGetID(data._id)
                 // Remove players and categories from local storage
                 localStorage.removeItem('players');
                 localStorage.removeItem('categories');

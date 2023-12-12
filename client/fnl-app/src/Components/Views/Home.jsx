@@ -5,11 +5,14 @@ import { useAuth0 } from '@auth0/auth0-react';
 
 function Home() {
     const navigate = useNavigate();
-    const { loginWithRedirect } = useAuth0();
+    const { loginWithRedirect, isAuthenticated, logout, isLoading } = useAuth0();
 
     const onClick = (route) => {
         navigate(`/${route}`);
     };
+    if (isLoading) {
+        return <div>Loading...</div>; // Or your loading spinner
+    }
     return (
         <>
             <div
@@ -20,12 +23,21 @@ function Home() {
                     marginTop: '20px',
                 }}
             >
-                <Button
-                    title='Login'
-                    color='#2196f3'
-                    width={'200px'}
-                    onClick={() => loginWithRedirect()}
-                />
+                {!isAuthenticated ? (
+                    <Button
+                        title='Login'
+                        color='#2196f3'
+                        width={'200px'}
+                        onClick={() => loginWithRedirect()}
+                    />
+                ) : (
+                    <Button
+                        title='LogOut'
+                        color='#2196f3'
+                        width={'200px'}
+                        onClick={() => logout()}
+                    />
+                )}
             </div>
 
             <div style={{ textAlign: 'center' }}>
