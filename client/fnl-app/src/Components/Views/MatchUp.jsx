@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Button from '../Atoms/Button/Button';
 import Input from '../Atoms/Input/Input';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const MatchUp = () => {
+    const { isAuthenticated, user, logout } = useAuth0();
+    console.log(user);
     const [statusOfPLayers, setStatusOfPLayers] = useState({});
     const [disabled, setDisabled] = useState(true);
     const [teams, setTeams] = useState({
@@ -26,8 +29,7 @@ const MatchUp = () => {
         const savedStatusPlayers = JSON.parse(localStorage.getItem('statusOfPLayers'));
         if (savedStatusPlayers) {
             setStatusOfPLayers(savedStatusPlayers);
-        }
-        else {
+        } else {
             // Use the ID to fetch the data
             fetch(`/playerStatus/status/${id}`)
                 .then((res) => res.json())
@@ -140,9 +142,9 @@ const MatchUp = () => {
     const saveTeams = () => {
         localStorage.setItem('teams', JSON.stringify(teams));
         console.log('saved', teams);
-        setDisabled(false)
-    }
-    
+        setDisabled(false);
+    };
+
     useEffect(() => {
         const savedTeams = JSON.parse(localStorage.getItem('teams'));
         if (savedTeams) {
@@ -150,9 +152,28 @@ const MatchUp = () => {
         }
     }, []);
 
+    useEffect(() => {
+        window.onbeforeunload = () => {
+            localStorage.removeItem('teams');
+            localStorage.removeItem('statusOfPLayers');
+        };
+
+        return () => {
+            window.onbeforeunload = null;
+        };
+    }, []);
 
     return (
         <>
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', margin:'20px' }}>
+                <Button
+                    title='LogOut'
+                    color='#2196f3'
+                    width={'200px'}
+                    onClick={() => logout()}
+                />
+
+            </div>
             <h1 style={{ textAlign: 'center' }}>FNL Roll Call</h1>
             <h1 style={{ textAlign: 'center' }}>Players Status</h1>
 
@@ -277,7 +298,6 @@ const MatchUp = () => {
                             ) : null
                         )}
                     </div>
-                    <p>welcome to game</p>
                     <Button
                         title='Submit'
                         color='#0074D9'
@@ -286,13 +306,18 @@ const MatchUp = () => {
                         marginTop={'20px'}
                         disabled={disabled}
                     />
-                    <p>Winner of Series</p>
-                    <Input
-                        name='seriesWinner'
-                        value={teams.seriesWinner.winner}
-                        onChange={handleChange}
-                        placeholder='seriesWinner'
-                    />
+                    {id && user.name === 'Navdeep Dhamrait' ? (
+                        <div style={{margin:'20px'}}>
+                            {' '}
+                            <p>Winner of Series</p>
+                            <Input
+                                name='seriesWinner'
+                                value={teams.seriesWinner.winner}
+                                onChange={handleChange}
+                                placeholder='seriesWinner'
+                            />
+                        </div>
+                    ) : null}
                 </form>
                 <Button
                     marginTop={'20px'}

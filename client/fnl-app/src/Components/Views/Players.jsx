@@ -3,9 +3,11 @@ import { useEffect, useState } from 'react';
 import Card from '../Molecules/Card/Card';
 import Button from '../Atoms/Button/Button';
 import { useNavigate } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const Players = () => {
     const [players, setPlayers] = useState([]);
+    const { isAuthenticated, user, logout } = useAuth0();
     const navigate = useNavigate();
     const onClick = () => {
         navigate(`/addPlayer`);
@@ -38,7 +40,9 @@ const Players = () => {
                     marginRight: '10px',
                 }}
             >
-                <Button title='Add Player' onClick={onClick} color='#0074D9' width={'205px'} />
+                {user.name === 'Navdeep Dhamrait' ? (
+                    <Button title='Add Player' onClick={onClick} color='#0074D9' width={'205px'} />
+                ) : null}
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                 <Card fnlPlayers={players} />
