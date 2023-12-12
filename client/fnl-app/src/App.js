@@ -10,8 +10,10 @@ import { MainProvider } from './Context';
 import AddPlayer from './Components/Views/AddPlayer';
 import Players from './Components/Views/Players';
 import ProtectedRoute from './ProtectedRoute';
+import { useAuth0 } from '@auth0/auth0-react';
 
 function App() {
+     const { isAuthenticated, user, logout } = useAuth0();
     return (
         <MainProvider>
             <Navbar />

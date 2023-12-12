@@ -165,6 +165,15 @@ const MatchUp = () => {
 
     return (
         <>
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', margin:'20px' }}>
+                <Button
+                    title='LogOut'
+                    color='#2196f3'
+                    width={'200px'}
+                    onClick={() => logout()}
+                />
+
+            </div>
             <h1 style={{ textAlign: 'center' }}>FNL Roll Call</h1>
             <h1 style={{ textAlign: 'center' }}>Players Status</h1>
 
@@ -289,7 +298,6 @@ const MatchUp = () => {
                             ) : null
                         )}
                     </div>
-                    <p>welcome to game</p>
                     <Button
                         title='Submit'
                         color='#0074D9'
@@ -298,14 +306,8 @@ const MatchUp = () => {
                         marginTop={'20px'}
                         disabled={disabled}
                     />
-                    <Button
-                        title='LogOut'
-                        color='#2196f3'
-                        width={'200px'}
-                        onClick={() => logout()}
-                    />
-                    {isAuthenticated ? (
-                        <>
+                    {id && user.name === 'Navdeep Dhamrait' ? (
+                        <div style={{margin:'20px'}}>
                             {' '}
                             <p>Winner of Series</p>
                             <Input
@@ -314,7 +316,7 @@ const MatchUp = () => {
                                 onChange={handleChange}
                                 placeholder='seriesWinner'
                             />
-                        </>
+                        </div>
                     ) : null}
                 </form>
                 <Button
