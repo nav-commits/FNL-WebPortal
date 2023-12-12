@@ -1,11 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { fnlPlayers } from '../Utils';
 import { useNavigate } from 'react-router-dom';
 import Button from '../Atoms/Button/Button';
-import mainContext from '../Context';
+import mainContext from '../../Context';
 
 function PlayerStatus() {
-    
+
     const { players, setPlayers } = useContext(mainContext);
     const [disabled, setDisabled] = useState(true);
 
@@ -55,7 +54,7 @@ function PlayerStatus() {
         // Save to local storage
         localStorage.setItem('players', JSON.stringify(updatedPlayers));
         localStorage.setItem('categories', JSON.stringify(updatedCategories));
-      
+
     };
     const navigate = useNavigate();
 
@@ -170,7 +169,7 @@ function PlayerStatus() {
         >
             <div className='players'>
                 <h2 style={{ fontSize: '25px', fontWeight: 'bold', color: '#0074D9' }}>Players</h2>
-                { players.length > 0 && players.map((player) => renderPlayer(player))}
+                {players.length > 0 && players.map((player) => renderPlayer(player))}
             </div>
             <form onSubmit={handleSubmit}>
                 <div style={{ margin: '30px' }}>
@@ -220,7 +219,7 @@ function PlayerStatus() {
                         marginTop={'20px'}
                         disabled={disabled}
                     />
-                   
+
                 </div>
             </form>
         </div>

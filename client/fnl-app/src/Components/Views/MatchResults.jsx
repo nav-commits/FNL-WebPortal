@@ -1,12 +1,12 @@
 import React from 'react';
 import { useContext, useEffect } from 'react';
-import mainContext from '../Context';
+import mainContext from '../../Context';
 import Button from '../Atoms/Button/Button';
 const MatchResults = () => {
     const { matchupResults, setMatchResults } = useContext(mainContext);
     const [open, setOpen] = React.useState(false);
     const [filterWeek, setFilterWeek] = React.useState([]);
-    const [weekNumber, setWeekNumber] = React.useState(0); 
+    const [weekNumber, setWeekNumber] = React.useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -17,7 +17,7 @@ const MatchResults = () => {
                 }
                 const responseData = await response.json();
                 setMatchResults(responseData);
-                setWeekNumber(prevWeekNumber => prevWeekNumber ? prevWeekNumber + 1: 1); // Increment week number
+                setWeekNumber(prevWeekNumber => prevWeekNumber ? prevWeekNumber + 1 : 1); // Increment week number
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -42,11 +42,11 @@ const MatchResults = () => {
 
     const weeks = matchupResults.map((result, index) => index + 1); // Define weeks here
 
-   React.useEffect(() => {
-    if (filterWeek.length === 0 && matchupResults.length > 0 && weekNumber) {
-        filterByWeek(matchupResults.length - 1); // Filter by the last week
-    }
-}, [matchupResults, filterWeek, weekNumber]);
+    React.useEffect(() => {
+        if (filterWeek.length === 0 && matchupResults.length > 0 && weekNumber) {
+            filterByWeek(matchupResults.length - 1); // Filter by the last week
+        }
+    }, [matchupResults, filterWeek, weekNumber]);
 
     console.log(weekNumber)
     let date = new Date(matchupResults[weekNumber - 1]?.createdAt);
