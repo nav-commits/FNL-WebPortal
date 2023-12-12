@@ -6,6 +6,13 @@ dotenv.config();
 const app = express();
 const port = 5001;
 const cors = require('cors');
+const { auth } = require('express-oauth2-jwt-bearer');
+
+const jwtCheck = auth({
+    audience: 'This is unique',
+    issuerBaseURL: 'https://dev-ctjmnskz6izhmqxs.us.auth0.com/',
+    tokenSigningAlg: 'RS256',
+});
 
 const uri = process.env.MONGODB_URI;
 
@@ -31,6 +38,9 @@ connect();
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(bodyParser.json({ limit: '50mb' }));
 
+// enforce on all endpoints
+app.use(jwtCheck);
+
 app.use('/players', playerRoute);
 app.use('/games', gameRoute);
 app.use('/playerStatus', playerStatusRoute);
@@ -40,6 +50,7 @@ const corsOptions = {
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
 };
 app.use(cors(corsOptions));
+
 
 app.listen(port, () => {
     console.log(`Node.js server is running on port ${port}`);
