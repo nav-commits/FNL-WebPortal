@@ -5,8 +5,7 @@ import Input from '../Atoms/Input/Input';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const MatchUp = () => {
-    const { isAuthenticated, user, logout } = useAuth0();
-    console.log(user);
+    const { user, logout, getAccessTokenSilently  } = useAuth0();
     const [statusOfPLayers, setStatusOfPLayers] = useState({});
     const [disabled, setDisabled] = useState(true);
     const [teams, setTeams] = useState({
@@ -26,21 +25,27 @@ const MatchUp = () => {
     const { id } = useParams();
 
     useEffect(() => {
-        const savedStatusPlayers = JSON.parse(localStorage.getItem('statusOfPLayers'));
-        if (savedStatusPlayers) {
-            setStatusOfPLayers(savedStatusPlayers);
-        } else {
-            // Use the ID to fetch the data
-            fetch(`/playerStatus/status/${id}`)
-                .then((res) => res.json())
-                .then((data) => {
+        const fetchData = async () => {
+            const savedStatusPlayers = JSON.parse(localStorage.getItem('statusOfPLayers'));
+            if (savedStatusPlayers) {
+                setStatusOfPLayers(savedStatusPlayers);
+            } else {
+                try {
+                    const token = await getAccessTokenSilently();
+                    const response = await fetch(`/playerStatus/status/${id}`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    const data = await response.json();
                     console.log('Success:', data);
                     setStatusOfPLayers(data);
-                })
-                .catch((error) => {
+                } catch (error) {
                     console.error('Error:', error);
-                });
-        }
+                }
+            }
+        };
+        fetchData();
     }, [id]);
 
     const teamNameKeys = Object.keys(teams);
@@ -120,24 +125,25 @@ const MatchUp = () => {
         }));
     };
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
-        fetch('/games/Game', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(teams),
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                console.log('Success:', data);
-                localStorage.removeItem('teams');
-                localStorage.removeItem('statusOfPLayers');
-            })
-            .catch((error) => {
-                console.error('Error:', error);
+        try {
+            const token = await getAccessTokenSilently();
+            const response = await fetch('/games/Game', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(teams),
             });
+            const data = await response.json();
+            console.log('Success:', data);
+            localStorage.removeItem('teams');
+            localStorage.removeItem('statusOfPLayers');
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
     const saveTeams = () => {
         localStorage.setItem('teams', JSON.stringify(teams));
