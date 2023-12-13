@@ -1,7 +1,7 @@
 import React from 'react';
 import './Button.css';
 
-function Button({ title, onClick, type, color, marginTop, width, disabled }) {
+function Button({ title, onClick, type, color, marginTop, width, disabled, marginLeft }) {
     return (
         <button
             disabled={disabled}
@@ -9,7 +9,8 @@ function Button({ title, onClick, type, color, marginTop, width, disabled }) {
             style={{ 
                 backgroundColor: disabled? 'grey' : color,
                 margin: marginTop,
-                width: width
+                width: width,
+                marginLeft: marginLeft,
             }}
             className='buttonStyle'
             type={type}

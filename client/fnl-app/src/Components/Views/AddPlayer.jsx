@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Button from '../Atoms/Button/Button';
 import Input from '../Atoms/Input/Input';
+import { useAuth0 } from "@auth0/auth0-react";
 
 function AddPlayer() {
     const [addPlayer, setAddPlayer] = useState({
@@ -12,27 +13,27 @@ function AddPlayer() {
         img: '',
         position: ''
     });
+    const { getAccessTokenSilently } = useAuth0();
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        fetch('/players/addPlayer', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(addPlayer),
-        })
-            .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                }
-            })
-            .then((responseData) => {
-                console.log(responseData);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
+        try {
+            const token = await getAccessTokenSilently();
+            const response = await fetch('/players/addPlayer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(addPlayer),
             });
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log(responseData);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
     const handleChange = (event, index) => {
         if (event.target.name === 'team') {

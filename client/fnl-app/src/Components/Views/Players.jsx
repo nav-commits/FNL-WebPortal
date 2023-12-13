@@ -7,26 +7,36 @@ import { useAuth0 } from '@auth0/auth0-react';
 
 const Players = () => {
     const [players, setPlayers] = useState([]);
-    const { isAuthenticated, user, logout } = useAuth0();
+    const { user, getAccessTokenSilently } = useAuth0();
     const navigate = useNavigate();
     const onClick = () => {
         navigate(`/addPlayer`);
     };
-
     useEffect(() => {
-        fetch('/players/players')
-            .then((response) => {
-                if (response.ok) {
-                    return response.json();
+        const fetchData = async () => {
+            try {
+                const token = await getAccessTokenSilently();
+                const response = await fetch('/players/players', {
+                    headers: {
+                        Authorization:`Bearer ${token}`,
+                    },
+                });
+
+                console.log('Response:', response);
+
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok, status code: ${response.status}`);
                 }
-            })
-            .then((responseData) => {
+
+                const responseData = await response.json();
                 setPlayers(responseData);
-            })
-            .catch((error) => {
+            } catch (error) {
                 console.error('Error:', error);
-            });
-    }, []);
+            }
+        };
+
+        fetchData();
+    }, [getAccessTokenSilently]);
 
     console.log(players);
     return (
